@@ -16,11 +16,12 @@ typedef struct{
         t_fecha fecha_cuota; //> fecha de afiliación y <= fecha de proceso.
         char estado;// 'A'(ALTA) o 'B'(BAJA)
         char plan[10]; //'BASIC'-'PREMIUM'-'VIP'-'FAMILY'
-        char email[30]; //si el menor es menor de edad, debera tener un email asociado. Validar formato del email.
+        char email[30]; //si es menor de edad, debera tener un email asociado. Validar formato del email.
 }t_miembro;
 
-int main()
+int main(int argc, char *argv[])
 {
+    t_miembro miembro[5];
 
     return 0;
 }
