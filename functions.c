@@ -1,6 +1,5 @@
 #include "functions.h"
 
-
 void validarFecha(t_fecha f)
 {
     int diasEnMes;
@@ -11,7 +10,7 @@ void validarFecha(t_fecha f)
         return;
     }
 
-    // Calcular días del mes
+    // Calcular dï¿½as del mes
     if (f.mes == 1 || f.mes == 3 || f.mes == 5 || f.mes == 7 || f.mes == 8 || f.mes == 10 || f.mes == 12)
         diasEnMes = 31;
     else
@@ -21,21 +20,21 @@ void validarFecha(t_fecha f)
         else // Febrero
         {
             if ((f.anio % 4 == 0 && f.anio % 100 != 0) || (f.anio % 400 == 0))
-                diasEnMes = 29;  // Año bisiesto
+                diasEnMes = 29;  // Aï¿½o bisiesto
             else
                 diasEnMes = 28;
         }
     }
 
-    if (f.dia < 1 || f.dia > diasEnMes) // Validar día
+    if (f.dia < 1 || f.dia > diasEnMes) // Validar dï¿½a
     {
         printf("Fecha invalida: dia incorrecto.\n");
         return;
     }
 
-    if (f.anio < 1) // Validar año
+    if (f.anio < 1) // Validar aÃ±o
     {
-        printf("Fecha invalida: año incorrecto.\n");
+        printf("Fecha invalida: aÃ±o incorrecto.\n");
         return;
     }
 
@@ -61,4 +60,29 @@ int compararFecha(t_fecha fecha_1, t_fecha fecha_2) { // devuelve 0 si son igual
     if (fecha_1.mes != fecha_2.mes)
         return fecha_1.mes - fecha_2.mes;
     return fecha_1.dia - fecha_2.dia;
+bool ValidarFechaNacimiento(t_fecha nacimiento) 
+{
+    time_t t;
+    struct tm *fecha;
+
+    // Obtener tiempo actual
+    time(&t);
+
+    // Convertir a fecha local
+    fecha = localtime(&t);
+
+    // Fecha del sistema
+    int diaHoy  = fecha->tm_mday;
+    int mesHoy  = fecha->tm_mon + 1;
+    int anioHoy = fecha->tm_year + 1900; 
+
+    printf("Hoy es: %02d/%02d/%d\n", diaHoy, mesHoy, anioHoy);
+
+    // Calcular edad
+    int edad = anioHoy - nacimiento.anio;
+
+    if (mesHoy < nacimiento.mes || (mesHoy == nacimiento.mes && diaHoy < nacimiento.dia))
+        edad--;
+
+    return edad >= 10;
 }
