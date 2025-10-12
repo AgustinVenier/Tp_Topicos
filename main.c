@@ -8,10 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    t_miembro miembro[5];
-    //test
+    //t_miembro miembro[5];
 
-
-    fechaActual();
     return 0;
 }

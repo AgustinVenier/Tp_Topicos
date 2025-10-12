@@ -1,5 +1,24 @@
 #include "functions.h"
 
+t_fecha fechaActual() {
+    time_t t = time(NULL);
+    struct tm *hoy = localtime(&t);
+
+    t_fecha f;
+    f.anio = hoy->tm_year + 1900;  // tm_year cuenta desde 1900
+    f.mes  = hoy->tm_mon + 1;      // tm_mon va de 0 a 11
+    f.dia  = hoy->tm_mday;         // tm_mday va de 1 a 31
+    return f;
+}
+
+int compararFecha(t_fecha fecha_1, t_fecha fecha_2) { // devuelve 0 si son iguales, >0 si fecha 1 es mayor, <0 si fecha 1 es menor
+    if (fecha_1.anio != fecha_2.anio)
+        return fecha_1.anio - fecha_2.anio;
+    if (fecha_1.mes != fecha_2.mes)
+        return fecha_1.mes - fecha_2.mes;
+    return fecha_1.dia - fecha_2.dia;
+}
+
 void validarFecha(t_fecha f)
 {
     int diasEnMes;
@@ -41,26 +60,8 @@ void validarFecha(t_fecha f)
     printf("La fecha %02d/%02d/%04d es valida.\n", f.dia, f.mes, f.anio);
 }
 
-
-
-t_fecha fechaActual() {
-    time_t t = time(NULL);
-    struct tm *hoy = localtime(&t);
-
-    t_fecha f;
-    f.anio = hoy->tm_year + 1900;  // tm_year cuenta desde 1900
-    f.mes  = hoy->tm_mon + 1;      // tm_mon va de 0 a 11
-    f.dia  = hoy->tm_mday;         // tm_mday va de 1 a 31
-    return f;
-}
-
-int compararFecha(t_fecha fecha_1, t_fecha fecha_2) { // devuelve 0 si son iguales, >0 si fecha 1 es mayor, <0 si fecha 1 es menor
-    if (fecha_1.anio != fecha_2.anio)
-        return fecha_1.anio - fecha_2.anio;
-    if (fecha_1.mes != fecha_2.mes)
-        return fecha_1.mes - fecha_2.mes;
-    return fecha_1.dia - fecha_2.dia;
-bool ValidarFechaNacimiento(t_fecha nacimiento) 
+/*
+bool ValidarFechaNacimiento(t_fecha nacimiento)
 {
     time_t t;
     struct tm *fecha;
@@ -74,7 +75,7 @@ bool ValidarFechaNacimiento(t_fecha nacimiento)
     // Fecha del sistema
     int diaHoy  = fecha->tm_mday;
     int mesHoy  = fecha->tm_mon + 1;
-    int anioHoy = fecha->tm_year + 1900; 
+    int anioHoy = fecha->tm_year + 1900;
 
     printf("Hoy es: %02d/%02d/%d\n", diaHoy, mesHoy, anioHoy);
 
@@ -85,4 +86,40 @@ bool ValidarFechaNacimiento(t_fecha nacimiento)
         edad--;
 
     return edad >= 10;
+}
+*/
+
+
+void normalizar(char * cad)
+{
+    char temp[61]; // funciona para cadenas de 60 carac
+    char *lect = cad;
+    char *esc = temp;
+
+
+    int primeraLetraPalabra;
+
+    while (*lect)
+    {
+        while (*lect && isspace(*lect))
+            lect++;
+
+        if (*lect)
+        {
+            primeraLetraPalabra = 1;
+
+            while (*lect && !isspace(*lect))
+            {
+                *esc = primeraLetraPalabra ? toupper(*lect) : tolower(*lect);
+                primeraLetraPalabra = 0;
+                esc++;
+                lect++;
+            }
+                *esc++ = ',';
+                *esc++ = ' ';
+
+        }
+    }
+    *(esc-2) = '\0';
+    strcpy(cad, temp);
 }

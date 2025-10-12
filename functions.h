@@ -10,7 +10,7 @@
 #define estadoValido(a) ( (a) == 'A' || (a)== 'B' //hacer un toupper previamente
 #define planValido(a) ((strcmpi ( (a),"BASIC")==0) || (strcmpi ( (a),"PREMIUM") ==0)|| (strcmpi ( (a),"VIP")==0) || (strcmpi ( (a),"FAMILY")==0) ) // no es sensible mayus/minus
 
-#define fNacValido(a,b) ( /*validacion formal  && */ (compararFecha((a),(b)) <0 ) ) // a fecha nac , b fecha proceso(restarle 10 a�os antes de pasarla)
+#define fNacValido(a,b) ( /*validacion formal  && */ (compararFecha((a),(b)) <0 ) ) // a fecha nac , b fecha proceso(restarle 10 anios antes de pasarla)
 #define fAfiliacionValido(a,b,c) ( /*validacion formal  && */ (compararFecha((a),(b)) <=0 ) && (compararFecha((a),(c)) >0 ))// a fecha afiliacion , b fecha proceso, c fecha nacimiento
 #define fUltCoutaValid(a,b,c) ( /*(dice q no hace falta formal ) */ (compararFecha((a),(b)) >0 ) && (compararFecha((a),(c)) <=0 ) )//a fecha ult couta b fecha afiliacion , c fecha proceso
 
@@ -35,6 +35,7 @@ typedef struct{
 t_fecha fechaActual();
 void validarFecha(t_fecha f);
 int compararFecha(t_fecha fecha_1, t_fecha fecha_2);
-bool ValidarFechaNacimiento(t_fecha nacimiento);
+void normalizar(char * cad); //normalizar cadena
+//bool ValidarFechaNacimiento(t_fecha nacimiento);
 
 #endif // FUNCTIONS_H_INCLUDED
