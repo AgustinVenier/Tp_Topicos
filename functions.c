@@ -19,49 +19,45 @@ int compararFecha(t_fecha fecha_1, t_fecha fecha_2) { // devuelve 0 si son igual
     return fecha_1.dia - fecha_2.dia;
 }
 
-void validarFecha(t_fecha f)
+int ValidarFecha(const t_fecha* f) // 0 invalida, 1 válida
 {
     int diasEnMes;
 
-    if (f.mes < 1 || f.mes > 12) // Validar mes
+    if (f->mes < 1 || f->mes > 12) // Validar mes
     {
-        printf("Fecha invalida: mes incorrecto.\n");
-        return;
+        return 0;
     }
 
     // Calcular d�as del mes
-    if (f.mes == 1 || f.mes == 3 || f.mes == 5 || f.mes == 7 || f.mes == 8 || f.mes == 10 || f.mes == 12)
+    if (f->mes == 1 || f->mes == 3 || f->mes == 5 || f->mes == 7 || f->mes == 8 || f->mes == 10 || f->mes == 12)
         diasEnMes = 31;
     else
     {
-        if (f.mes == 4 || f.mes == 6 || f.mes == 9 || f.mes == 11)
+        if (f->mes == 4 || f->mes == 6 || f->mes == 9 || f->mes == 11)
             diasEnMes = 30;
         else // Febrero
         {
-            if ((f.anio % 4 == 0 && f.anio % 100 != 0) || (f.anio % 400 == 0))
+            if ((f->anio % 4 == 0 && f->anio % 100 != 0) || (f->anio % 400 == 0))
                 diasEnMes = 29;  // A�o bisiesto
             else
                 diasEnMes = 28;
         }
     }
 
-    if (f.dia < 1 || f.dia > diasEnMes) // Validar d�a
+    if (f->dia < 1 || f->dia > diasEnMes) // Validar d�a
     {
-        printf("Fecha invalida: dia incorrecto.\n");
-        return;
+        return 0;
     }
 
-    if (f.anio < 1) // Validar año
+    if (f->anio < 1) // Validar año
     {
-        printf("Fecha invalida: año incorrecto.\n");
-        return;
+        return 0;
     }
-
-    printf("La fecha %02d/%02d/%04d es valida.\n", f.dia, f.mes, f.anio);
+    return 1;
 }
 
-/*
-bool ValidarFechaNacimiento(t_fecha nacimiento)
+
+int ValidarFechaNacimiento(const t_fecha* nacimiento)
 {
     time_t t;
     struct tm *fecha;
@@ -80,14 +76,14 @@ bool ValidarFechaNacimiento(t_fecha nacimiento)
     printf("Hoy es: %02d/%02d/%d\n", diaHoy, mesHoy, anioHoy);
 
     // Calcular edad
-    int edad = anioHoy - nacimiento.anio;
+    int edad = anioHoy - nacimiento->anio;
 
-    if (mesHoy < nacimiento.mes || (mesHoy == nacimiento.mes && diaHoy < nacimiento.dia))
+    if (mesHoy < nacimiento->mes || (mesHoy == nacimiento->mes && diaHoy < nacimiento->dia))
         edad--;
 
-    return edad >= 10;
+    return (edad >= 10);
 }
-*/
+
 
 
 void normalizar(char * cad)

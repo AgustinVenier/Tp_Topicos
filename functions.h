@@ -6,13 +6,12 @@
 #include <time.h>
 
 #define dniValido(a) (1000000 < (a) && (a) < 100000000)
-#define sexValido(a) ( (a) == 'F' || (a)== 'M' //hacer un toupper previamente
-#define estadoValido(a) ( (a) == 'A' || (a)== 'B' //hacer un toupper previamente
+#define sexValido(a) ( (a) == 'F' || (a)== 'M' )//hacer un toupper previamente
+#define estadoValido(a) ( (a) == 'A' || (a)== 'B' )//hacer un toupper previamente
 #define planValido(a) ((strcmpi ( (a),"BASIC")==0) || (strcmpi ( (a),"PREMIUM") ==0)|| (strcmpi ( (a),"VIP")==0) || (strcmpi ( (a),"FAMILY")==0) ) // no es sensible mayus/minus
-
-#define fNacValido(a,b) ( /*validacion formal  && */ (compararFecha((a),(b)) <0 ) ) // a fecha nac , b fecha proceso(restarle 10 anios antes de pasarla)
+#define fNacValido(a) ( (ValidarFecha(a))  &&  (ValidarFechaNacimiento(a))) // a &fecha nac
 #define fAfiliacionValido(a,b,c) ( /*validacion formal  && */ (compararFecha((a),(b)) <=0 ) && (compararFecha((a),(c)) >0 ))// a fecha afiliacion , b fecha proceso, c fecha nacimiento
-#define fUltCoutaValid(a,b,c) ( /*(dice q no hace falta formal ) */ (compararFecha((a),(b)) >0 ) && (compararFecha((a),(c)) <=0 ) )//a fecha ult couta b fecha afiliacion , c fecha proceso
+#define fUltCoutaValid(a,b,c) ( (compararFecha((a),(b)) >0 ) && (compararFecha((a),(c)) <=0 ) )//a fecha ult couta b fecha afiliacion , c fecha proceso
 
 
 typedef struct{
@@ -33,9 +32,8 @@ typedef struct{
 }t_miembro;
 
 t_fecha fechaActual();
-void validarFecha(t_fecha f);
+int ValidarFecha(const t_fecha* f);
 int compararFecha(t_fecha fecha_1, t_fecha fecha_2);
 void normalizar(char * cad); //normalizar cadena
-//bool ValidarFechaNacimiento(t_fecha nacimiento);
-
+int ValidarFechaNacimiento(const t_fecha *nacimiento);
 #endif // FUNCTIONS_H_INCLUDED
