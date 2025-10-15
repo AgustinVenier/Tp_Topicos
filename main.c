@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    int num;
+    //int num;
     /* TEST
     //t_miembro miembro[5];
     t_fecha *p_fechanac,fechanac;
@@ -22,5 +22,41 @@ int main(int argc, char *argv[])
     //printf("Es nac val: %d",num);
     */
 
-    return 0;
+    t_fecha fechaProceso, fechaRecuperar;
+    t_fecha *pf = &fechaProceso;
+    t_fecha *pr = &fechaRecuperar;
+
+    int valorFechaProc, valorFechaRecu;
+    char recuperar;
+
+    do
+    {
+        if (valorFecha == ERROR)
+            printf("Ingrese la fecha nuevamente (D/M/A): ");
+        else
+            printf("Ingrese la fecha del proceso (D/M/A): ");
+
+        scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
+        valorFechaProc = validarFecha(pf);   // pf es puntero válido
+    }while (valorFechaProc == ERROR);
+
+    printf("Desea recuperar un archivo modificado en corridas previas a la fecha? (S/N): ");
+    scanf("%c", &recuperar);
+
+    if(toupper(recuperar) == 'S')
+    {
+        do
+        {
+            if (valorFecha == ERROR)
+                printf("Ingrese la fecha nuevamente (D/M/A): ");
+            else
+                printf("Ingrese la fecha del archivo a recuperar (D/M/A): ");
+
+            scanf(FORMATO_FECHA, &pr->dia, &pr->mes, &pr->anio);
+            valorFechaRecu = validarFecha(pr);
+        }while(valorFechaRecu == ERROR ); //DEBE SER MENOR A LA FECHA DEL PROCESO ACTUAL?
+
+        //pasajeTextoBinario()
+    }
+        return 0;
 }

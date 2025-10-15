@@ -1,6 +1,7 @@
 #include "functions.h"
 
-t_fecha fechaActual() {
+t_fecha fechaActual()
+{
     time_t t = time(NULL);
     struct tm *hoy = localtime(&t);
 
@@ -11,7 +12,8 @@ t_fecha fechaActual() {
     return f;
 }
 
-int compararFecha(t_fecha fecha_1, t_fecha fecha_2) { // devuelve 0 si son iguales, >0 si fecha 1 es mayor, <0 si fecha 1 es menor
+int compararFecha(t_fecha fecha_1, t_fecha fecha_2)   // devuelve 0 si son iguales, >0 si fecha 1 es mayor, <0 si fecha 1 es menor
+{
     if (fecha_1.anio != fecha_2.anio)
         return fecha_1.anio - fecha_2.anio;
     if (fecha_1.mes != fecha_2.mes)
@@ -19,13 +21,13 @@ int compararFecha(t_fecha fecha_1, t_fecha fecha_2) { // devuelve 0 si son igual
     return fecha_1.dia - fecha_2.dia;
 }
 
-int ValidarFecha(const t_fecha* f) // 0 invalida, 1 válida
+int validarFecha(const t_fecha* f)
 {
     int diasEnMes;
 
     if (f->mes < 1 || f->mes > 12) // Validar mes
     {
-        return 0;
+        return ERROR;
     }
 
     // Calcular d�as del mes
@@ -46,18 +48,18 @@ int ValidarFecha(const t_fecha* f) // 0 invalida, 1 válida
 
     if (f->dia < 1 || f->dia > diasEnMes) // Validar d�a
     {
-        return 0;
+        return ERROR;
     }
 
     if (f->anio < 1) // Validar año
     {
-        return 0;
+        return ERROR;
     }
-    return 1;
+    return EXITO;
 }
 
 
-int ValidarFechaNacimiento(const t_fecha* nacimiento)
+int validarFechaNacimiento(const t_fecha* nacimiento)
 {
     time_t t;
     struct tm *fecha;
@@ -111,11 +113,102 @@ void normalizar(char * cad)
                 esc++;
                 lect++;
             }
-                *esc++ = ',';
-                *esc++ = ' ';
+            *esc++ = ',';
+            *esc++ = ' ';
 
         }
     }
     *(esc-2) = '\0';
     strcpy(cad, temp);
 }
+
+
+int validarEmail(char *cad)
+{
+    char* pc=cad;
+    if(strcmp(pc,"")==0){
+        return ERROR;
+    }
+
+
+    pc=strchr(pc,'@');
+
+
+    if(pc!=NULL && isalnum(*(pc-1)) && isalpha(*(pc+1)))  /// el de adelante del @ alphanum? o solo letra?
+    {
+        pc=strrchr(pc,'.');
+        if(pc!=NULL && isalpha(*(pc-1)) && isalpha(*(pc+1)))  /// el de adelante y atras del . alphanum? o solo letra?
+        {
+            return EXITO;
+        }
+    }
+
+    return ERROR;
+}
+
+
+int validarFechaCategoria(char * categ, char * email) ///validamos la edad?
+{
+    if(strcmpi(categ, "MENOR") == 0)
+    {
+        if(validarEmail(email)==EXITO)
+            return EXITO;
+    }
+    else if(strcmpi(categ, "MAYOR") == 0)
+        return EXITO;
+    return ERROR;
+}
+
+int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError)
+{
+    char cad[BUFFER];
+    t_miembro m1;
+    t_miembro *miembro = &m1;
+    int valor;
+    //int cantMiembros = 0;
+    FILE* ftexto = fopen(nombreArchivoTexto, "rt");
+    FILE* ferror = fopen(nombreArchivoError, "wt");
+    FILE* fbin = fopen(nombreArchivoBin, "wb");
+
+    if (!ftexto || !ferror || !fbin)
+    {
+        printf("Error al abrir un archivo.");
+        return ERROR;
+    }
+
+    while(fgets(cad, sizeof(cad), ftexto))
+    {
+        sscanf(nombreArchivoTexto,
+           "%ld|%s|" FORMATO_FECHA "|%c|" FORMATO_FECHA "|%s|" FORMATO_FECHA "|%c|%s|%s",
+            &miembro->dni, miembro->nya, &miembro->fecha_nac.dia, &miembro->fecha_nac.mes,
+            &miembro->fecha_nac.anio, &miembro->sexo, &miembro->fecha_afi.dia, &miembro->fecha_afi.mes,
+            &miembro->fecha_afi.anio, miembro->cat, &miembro->fecha_cuota.dia, &miembro->fecha_cuota.mes,
+            &miembro->fecha_cuota.anio, &miembro->estado, miembro->plan, miembro->email
+            );
+
+        //valor = validaciones();
+
+        if(valor == EXITO)
+        {
+            fwrite(&miembro, sizeof(t_miembro), 1, fbin);
+            //cantMiembros++;
+        }
+        else if(valor == ERROR)
+        {
+            fprintf(ferror, "%s", cad);
+        }
+    }
+
+    fclose(ftexto);
+    fclose(fbin);
+    fclose(ferror);
+    //es necesario retornar la cantidad de miembros?
+    return EXITO;
+}
+
+//suma los valores de todas las validaciones si retorna exito pasa a binario y
+//si retorna error crea un archivo de texto error
+//int validaciones()
+//{
+    //implementar
+//}

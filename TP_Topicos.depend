@@ -14,3 +14,18 @@
 1760363795 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.c
 	"functions.h"
 
+1760536643 source:c:\users\agust\desktop\tp_topicos\tp_topicos\main.c
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	"functions.h"
+
+1760536757 c:\users\agust\desktop\tp_topicos\tp_topicos\functions.h
+	<stdio.h>
+	<ctype.h>
+	<string.h>
+	<time.h>
+
+1760538656 source:c:\users\agust\desktop\tp_topicos\tp_topicos\functions.c
+	"functions.h"
+
