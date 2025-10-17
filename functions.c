@@ -12,16 +12,16 @@ t_fecha fechaActual()
     return f;
 }
 
-int compararFecha(t_fecha fecha_1, t_fecha fecha_2)   // devuelve 0 si son iguales, >0 si fecha 1 es mayor, <0 si fecha 1 es menor
+int compararFecha(const t_fecha* fecha_1, const t_fecha* fecha_2)   // devuelve 0 si son iguales, >0 si fecha 1 es mayor, <0 si fecha 1 es menor
 {
-    if (fecha_1.anio != fecha_2.anio)
-        return fecha_1.anio - fecha_2.anio;
-    if (fecha_1.mes != fecha_2.mes)
-        return fecha_1.mes - fecha_2.mes;
-    return fecha_1.dia - fecha_2.dia;
+    if (fecha_1->anio != fecha_2->anio)
+        return fecha_1->anio - fecha_2->anio;
+    if (fecha_1->mes != fecha_2->mes)
+        return fecha_1->mes - fecha_2->mes;
+    return fecha_1->dia - fecha_2->dia;
 }
 
-int validarFecha(const t_fecha* f)
+int validarFecha(const t_fecha* f) // retorna 0 valido, 1 invalido
 {
     int diasEnMes;
 
@@ -59,7 +59,7 @@ int validarFecha(const t_fecha* f)
 }
 
 
-int validarFechaNacimiento(const t_fecha* nacimiento)
+int validarFechaNacimiento(const t_fecha* nacimiento) // retorna 0 valido, 1 invalido
 {
     time_t t;
     struct tm *fecha;
@@ -83,7 +83,7 @@ int validarFechaNacimiento(const t_fecha* nacimiento)
     if (mesHoy < nacimiento->mes || (mesHoy == nacimiento->mes && diaHoy < nacimiento->dia))
         edad--;
 
-    return (edad >= 10);
+    return (edad < 10);
 }
 
 
@@ -232,3 +232,72 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 //{
     //implementar
 //}
+int fNacValido(const t_fecha* fechaNac)
+{
+    if (validarFecha(fechaNac) == ERROR)
+        return ERROR;
+
+    if (validarFechaNacimiento(fechaNac) == ERROR)
+        return ERROR;
+
+    return EXITO;
+}
+
+int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t_fecha* fechaNac)
+{
+    if (validarFecha(fechaAfi) == ERROR)
+        return ERROR;
+
+   if (compararFecha(fechaAfi, fechaProc) > 0) // afiliación > proceso // creo que el problema esta en esta linea
+       return ERROR;
+
+    if (compararFecha(fechaAfi, fechaNac) <= 0) // afiliación <= nacimiento
+        return ERROR;
+
+    return EXITO;
+}
+
+int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc)
+{
+    if (compararFecha(fechaCuota, fechaAfi) <= 0) // cuota <= afiliación
+        return ERROR;
+
+    if (compararFecha(fechaCuota, fechaProc) > 0) // cuota > proceso
+        return ERROR;
+
+    return EXITO;
+}
+
+int validaciones(t_miembro * miembro,const t_fecha* f_proceso )
+{
+    if (!dniValido(miembro->dni))
+        return 1; //error en campo 1
+
+    normalizar(miembro->nya);
+
+    if (fNacValido(&miembro->fecha_nac))
+        return 2; //error campo 2
+
+    if (!sexValido(miembro->sexo))
+        return 3; //error campo 3
+
+    if (fAfiliacionValido(&miembro->fecha_afi,f_proceso,&miembro->fecha_nac)==ERROR)
+        return 4; // error campo 4
+
+    ///if ( // Implementar Validacion Categoria
+    ///);
+
+    if (fUltCoutaValid(&miembro->fecha_cuota,&miembro->fecha_afi,f_proceso))
+        return 6; //error campo 6
+
+    if (!estadoValido(miembro->estado))
+        return 7; //error campo 7
+
+    if (!planValido(miembro->plan))
+        return 8; //error campo 8
+
+    if (validarEmail(miembro->email))
+        return 9; // error campo 9
+
+    return EXITO ; // 0, registro válido
+}
