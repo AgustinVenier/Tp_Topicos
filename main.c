@@ -8,7 +8,7 @@
 
 int main(int argc, char *argv[])
 {
-    //int num;
+    int num;
     /* TEST
     //t_miembro miembro[5];
     t_fecha *p_fechanac,fechanac;
@@ -22,16 +22,18 @@ int main(int argc, char *argv[])
     //printf("Es nac val: %d",num);
     */
 
+    //------------
+
     t_fecha fechaProceso, fechaRecuperar;
     t_fecha *pf = &fechaProceso;
     t_fecha *pr = &fechaRecuperar;
 
     int valorFechaProc, valorFechaRecu;
     char recuperar;
-
+    /*
     do
     {
-        if (valorFecha == ERROR)
+        if (valorFecha == ERROR) /// valor fecha no está definido
             printf("Ingrese la fecha nuevamente (D/M/A): ");
         else
             printf("Ingrese la fecha del proceso (D/M/A): ");
@@ -41,13 +43,14 @@ int main(int argc, char *argv[])
     }while (valorFechaProc == ERROR);
 
     printf("Desea recuperar un archivo modificado en corridas previas a la fecha? (S/N): ");
+
     scanf("%c", &recuperar);
 
     if(toupper(recuperar) == 'S')
     {
         do
         {
-            if (valorFecha == ERROR)
+            if (valorFecha == ERROR) /// valor fecha no está definido
                 printf("Ingrese la fecha nuevamente (D/M/A): ");
             else
                 printf("Ingrese la fecha del archivo a recuperar (D/M/A): ");
@@ -58,5 +61,12 @@ int main(int argc, char *argv[])
 
         //pasajeTextoBinario()
     }
+    */
+
+    num = pasajeTextoBinario("Miembros-VC.txt","Miembros-VC-15102025.dat","1.dat");
+    printf("%d",num);
+
+
+
         return 0;
 }

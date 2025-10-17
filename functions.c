@@ -95,30 +95,37 @@ void normalizar(char * cad)
     char *esc = temp;
 
 
-    int primeraLetraPalabra;
+    int primeraLetraPalabra,primeraPalabra=0;
 
     while (*lect)
     {
-        while (*lect && isspace(*lect))
+        while (*lect && (isspace(*lect)|| *lect ==','))
             lect++;
 
         if (*lect)
         {
             primeraLetraPalabra = 1;
 
-            while (*lect && !isspace(*lect))
+            while (*lect && !isspace(*lect) && *lect!=',')
             {
+
                 *esc = primeraLetraPalabra ? toupper(*lect) : tolower(*lect);
                 primeraLetraPalabra = 0;
                 esc++;
                 lect++;
+
             }
-            *esc++ = ',';
+            if(!primeraPalabra)
+            {
+                *esc++ = ',';
+                 primeraPalabra=1;
+            }
+
             *esc++ = ' ';
 
         }
     }
-    *(esc-2) = '\0';
+    *(esc-1) = '\0';
     strcpy(cad, temp);
 }
 
@@ -170,27 +177,40 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     FILE* ferror = fopen(nombreArchivoError, "wt");
     FILE* fbin = fopen(nombreArchivoBin, "wb");
 
-    if (!ftexto || !ferror || !fbin)
+    if (ftexto ==NULL)
     {
-        printf("Error al abrir un archivo.");
+        printf("Error al abrir un archivo texto");
+        return ERROR;
+    }
+    if (ferror ==NULL)
+    {
+        printf("Error al abrir un archivo error");
+        return ERROR;
+    }
+    if (fbin ==NULL)
+    {
+        printf("Error al abrir un archivo binario");
         return ERROR;
     }
 
     while(fgets(cad, sizeof(cad), ftexto))
     {
-        sscanf(nombreArchivoTexto,
-           "%ld|%s|" FORMATO_FECHA "|%c|" FORMATO_FECHA "|%s|" FORMATO_FECHA "|%c|%s|%s",
-            &miembro->dni, miembro->nya, &miembro->fecha_nac.dia, &miembro->fecha_nac.mes,
+        sscanf(cad, /// revisar
+          /// no lee correctamente
+          //"%ld|%s|" FORMATO_FECHA "|%c|" FORMATO_FECHA "|%s|" FORMATO_FECHA "|%c|%s|%s",
+          "%ld,\"%[^\"]\",%d/%d/%d,%c,%d/%d/%d,%[^,],%d/%d/%d,%c,%[^,],", // revisar, pero me parece que anda, con el archivo de texto que nosotros tenemos
+            &miembro->dni,miembro->nya, &miembro->fecha_nac.dia, &miembro->fecha_nac.mes,
             &miembro->fecha_nac.anio, &miembro->sexo, &miembro->fecha_afi.dia, &miembro->fecha_afi.mes,
             &miembro->fecha_afi.anio, miembro->cat, &miembro->fecha_cuota.dia, &miembro->fecha_cuota.mes,
             &miembro->fecha_cuota.anio, &miembro->estado, miembro->plan, miembro->email
             );
 
         //valor = validaciones();
+        valor =0;
 
         if(valor == EXITO)
         {
-            fwrite(&miembro, sizeof(t_miembro), 1, fbin);
+            fwrite(miembro, sizeof(t_miembro), 1, fbin); ///revisar
             //cantMiembros++;
         }
         else if(valor == ERROR)
