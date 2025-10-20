@@ -32,15 +32,6 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     }
 
 
-        fclose(ftexto);
-    fclose(fbin);
-    fclose(ferror);
-
-
-exit(1);
-
-
-
     while(fgets(cad, sizeof(cad), ftexto))
     {
         sscanf(cad, /// revisar
