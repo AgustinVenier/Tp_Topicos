@@ -2,7 +2,7 @@
 
 
 
-//Binario a texto
+//Procesar archivo
 
 int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso)
 {
@@ -30,6 +30,16 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
         printf("Error al abrir un archivo binario");
         return ERROR;
     }
+
+
+        fclose(ftexto);
+    fclose(fbin);
+    fclose(ferror);
+
+
+exit(1);
+
+
 
     while(fgets(cad, sizeof(cad), ftexto))
     {
@@ -84,7 +94,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso )
     if (fAfiliacionValido(&miembro->fecha_afi,f_proceso,&miembro->fecha_nac)==ERROR)
         return 4; // error F AFILIACION
 
-    if (validarFechaCategoria(miembro->cat,miembro->email,&miembro->fecha_nac,f_proceso))
+    if (validarFechaCategoria(miembro->cat,&miembro->fecha_nac,f_proceso))
         return 5; // Error CATEGORIA, no es la indicada o vacio
 
     if (fUltCoutaValid(&miembro->fecha_cuota,&miembro->fecha_afi,f_proceso))
@@ -274,4 +284,35 @@ int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_f
 
     return EXITO;
 }
+//----------------------------------------------------------------------------------------------
+//Directorios Archivos
 
+
+void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
+{
+    struct dirent *dir;
+    DIR *d = opendir(subCarpeta);
+    int flag=0;
+
+    if (!d)
+    {
+        perror("opendir() error");
+        *nombreArchivo=NULL;
+        return ; // La subcarpeta no existe o no se puede leer
+    }
+
+    while ((dir = readdir(d)) != NULL && flag==0)
+    {
+        if (strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0)
+        {
+            strcpy(nombreArchivo, dir->d_name);
+            flag=1;
+
+        }
+        else
+            *nombreArchivo='\0';
+    }
+
+    closedir(d); // Cerramos el directorio
+    return ;
+}

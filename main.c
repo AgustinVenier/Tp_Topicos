@@ -2,60 +2,63 @@
 
 int main(int argc, char *argv[])
 {
-    int num;
-
-    ///Invocacion validacion nacimiento // num= fNacValido(&fechanac);
-    //printf("Es nac val: %d",num);
-
-
-    //------------
+    int procesamiento,valorFechaProc;
+    char *subcarpeta_binario="ArchivoBinario",*subcarpeta_error="ArchivoTextoError";
+    char nombreArchivoBinario[60],nombreArchivoError[60],*nombreArchivoTexto="miembros-VC.txt",aux[10];
 
     t_fecha fechaProceso, fechaRecuperar;
     t_fecha *pf = &fechaProceso;
-    t_fecha *pr = &fechaRecuperar;
+    //t_fecha *pr = &fechaRecuperar;
 
-    int valorFechaProc, valorFechaRecu;
-    char recuperar;
+    printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
+    scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
+    valorFechaProc = validarFecha(pf);   // pf es puntero válido
 
-    do
-    {
-        if (valorFecha == ERROR) /// valor fecha no está definido
-            printf("Ingrese la fecha nuevamente (D/M/A): ");
-        else
-            printf("Ingrese la fecha del proceso (D/M/A): ");
-
-        scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
-        valorFechaProc = validarFecha(pf);   // pf es puntero válido
-    }
-    while (valorFechaProc == ERROR);
-
-    printf("Desea recuperar un archivo modificado en corridas previas a la fecha? (S/N): ");
-
-    scanf("%c", &recuperar);
-
-    if(toupper(recuperar) == 'S')
-    {
-        do
+    while (valorFechaProc == ERROR)
         {
-            if (valorFecha == ERROR) /// valor fecha no está definido
-                printf("Ingrese la fecha nuevamente (D/M/A): ");
-            else
-                printf("Ingrese la fecha del archivo a recuperar (D/M/A): ");
+                printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
+                fflush(stdin);
+                scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
+                valorFechaProc = validarFecha(pf);
 
-            scanf(FORMATO_FECHA, &pr->dia, &pr->mes, &pr->anio);
-            valorFechaRecu = validarFecha(pr);
         }
-        while(valorFechaRecu == ERROR );  //DEBE SER MENOR A LA FECHA DEL PROCESO ACTUAL?
 
-        //pasajeTextoBinario()
+
+    LeeSubCarpeta(subcarpeta_binario,nombreArchivoBinario);
+    if(*nombreArchivoBinario==NULL) // si no hay ningun archivo anterior en la subcarpeta
+    {
+        printf("Se procesara Archivo miembros-VC.txt , no hay archivos para recuperar \n");
+        strcpy(nombreArchivoBinario,subcarpeta_binario);
+        strcat(nombreArchivoBinario, "/miembros-VC-");
+        sprintf(aux,"%04d%02d%02d",pf->anio,pf->mes,pf->dia);
+        strcat(nombreArchivoBinario,aux);
+        strcat(nombreArchivoBinario,".dat");
+
+        strcpy(nombreArchivoError,subcarpeta_error);
+        strcat(nombreArchivoError, "/error-VC-");
+        strcat(nombreArchivoError,aux);
+        strcat(nombreArchivoError,".txt");
+
+        procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,pf);
+        if (procesamiento==EXITO)
+            printf("Procesamiento exitoso\n");
+        else
+            printf("Error en el procesamiento\n");
     }
 
+        else
+        printf("El archivo a recuperar es : %s\n",nombreArchivoBinario);
 
-    //num = pasajeTextoBinario("Miembros-VC.txt","Miembros-VC-15102025.dat","1.dat");
-    //printf("%d",num);
-
+    /// LOGICA PARTE 2 Y MENU
+    return 0;
 }
-
+/*
+    LeeSubCarpeta(subcarpeta_error,nombreArchivo); ///busca si hay algo en la carpeta de arch texto
+    if(*nombreArchivo==NULL)
+        printf("vacio");
+    else
+        printf("%s\n",nombreArchivo);
+*/
 
 /* TEST
 //t_miembro miembro[5];

@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include <time.h>
+#include <time.h> // se usa???
+#include <dirent.h>   // Para manejar directorios
 
 
 #define EXITO 0
@@ -40,7 +41,7 @@ typedef struct
     char email[30]; //si es menor de edad, debera tener un email asociado. Validar formato del email.
 } t_miembro;
 
-//Binario a texto
+//Procesar Archivo
 int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso);
 
 //Validacion General
@@ -57,6 +58,9 @@ int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f
 int fNacValido(const t_fecha* fechaNac,const t_fecha * f_proceso);
 int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t_fecha* fechaNac);
 int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc);
+
+//Directorios Archivos
+void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo); //devuelve el nombre de  un archivo de esa subcarpeta
 
 
 
