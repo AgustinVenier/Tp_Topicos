@@ -40,17 +40,24 @@ typedef struct
     char email[30]; //si es menor de edad, debera tener un email asociado. Validar formato del email.
 } t_miembro;
 
-t_fecha fechaActual();
+//Binario a texto
+int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso);
+
+//Validacion General
+int validaciones(t_miembro *,const t_fecha* f_proceso);
+
+//Validaciones Campos
+
 int validarFecha(const t_fecha* f);
 int compararFecha(const t_fecha* fecha_1,const t_fecha* fecha_2);
 void normalizar(char * cad); //normalizar cadena
-int validarFechaNacimiento(const t_fecha *nacimiento);
+int validarFechaNacimiento(const t_fecha* nacimiento,const t_fecha * t_proceso,int cant_anios);
 int validarEmail(char *cad);
-int validarFechaCategoria(char * categ, char * email);
-int fNacValido(const t_fecha* fechaNac);
+int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f_proceso);
+int fNacValido(const t_fecha* fechaNac,const t_fecha * f_proceso);
 int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t_fecha* fechaNac);
 int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc);
 
-int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError);
-int validaciones(t_miembro *,const t_fecha* f_proceso);
+
+
 #endif // FUNCTIONS_H_INCLUDED

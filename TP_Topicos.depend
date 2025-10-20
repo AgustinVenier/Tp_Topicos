@@ -1,17 +1,17 @@
 # depslib dependency file v1.0
-1760730589 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\main.c
+1760973399 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\main.c
 	<stdio.h>
 	<stdlib.h>
 	<ctype.h>
 	"functions.h"
 
-1760730449 c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.h
+1760971644 c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.h
 	<stdio.h>
 	<ctype.h>
 	<string.h>
 	<time.h>
 
-1760731683 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.c
+1760973650 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.c
 	"functions.h"
 
 1760536643 source:c:\users\agust\desktop\tp_topicos\tp_topicos\main.c
