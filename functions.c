@@ -34,10 +34,8 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 
     while(fgets(cad, sizeof(cad), ftexto))
     {
-        sscanf(cad, /// revisar
-               /// no lee correctamente
-               "%li|%s|%d/%d/%d|%c|" FORMATO_FECHA "|%s|" FORMATO_FECHA "|%c|%s|%s",
-               //"%ld,\"%[^\"]\",%d/%d/%d,%c,%d/%d/%d,%[^,],%d/%d/%d,%c,%[^,],", // revisar, pero me parece que anda, con el archivo de texto que nosotros tenemos
+        sscanf(cad,
+                "%ld,\"%[^\"]\",%d/%d/%d,%c,%d/%d/%d,%10[^,],%d/%d/%d,%c,%9[^,],%29s", // Lee archivo de texto separado por comas, y el string de nya dentro de comillas dobles.
                &miembro->dni,miembro->nya, &miembro->fecha_nac.dia, &miembro->fecha_nac.mes,
                &miembro->fecha_nac.anio, &miembro->sexo, &miembro->fecha_afi.dia, &miembro->fecha_afi.mes,
                &miembro->fecha_afi.anio, miembro->cat, &miembro->fecha_cuota.dia, &miembro->fecha_cuota.mes,
