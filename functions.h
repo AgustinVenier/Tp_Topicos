@@ -62,6 +62,8 @@ int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_f
 //Directorios Archivos
 void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo); //devuelve el nombre de  un archivo de esa subcarpeta
 
+//Parte 2
+char menu(const char *msj, const char *opc);
 
 
 #endif // FUNCTIONS_H_INCLUDED

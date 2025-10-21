@@ -4,17 +4,27 @@
 	<ActiveTarget name="Debug" />
 	<File name="functions.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1926" topLine="19" />
+			<Cursor1 position="1870" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="functions.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="indice.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7823" topLine="242" />
+			<Cursor1 position="441" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="main.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
+	<File name="main.c" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2392" topLine="0" />
+			<Cursor1 position="2370" topLine="50" />
+		</Cursor>
+	</File>
+	<File name="functions.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8870" topLine="294" />
+		</Cursor>
+	</File>
+	<File name="indice.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1711" topLine="28" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

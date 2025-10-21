@@ -307,3 +307,24 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
     closedir(d); // Cerramos el directorio
     return ;
 }
+
+//------------------------------------------------------------------------------------------------------
+//menu
+
+char menu(const char *msj, const char *opc)
+{
+    char opta;
+    int priVez = 1;
+
+    do
+    {
+        printf("%s%s",
+               priVez ? priVez = 0, "" : "ERROR - Opcion No valida\n",
+               msj);
+        fflush(stdin);
+        scanf("%c", &opta);
+    } while(strchr(opc, opta) == NULL);
+    return opta;
+}
+
+

@@ -2,9 +2,9 @@
 
 int main(int argc, char *argv[])
 {
-    int procesamiento,valorFechaProc;
+    int procesamiento,valorFechaProc, i = 0;
     char *subcarpeta_binario="ArchivoBinario",*subcarpeta_error="ArchivoTextoError";
-    char nombreArchivoBinario[60],nombreArchivoError[60],*nombreArchivoTexto="miembros-VC.txt",aux[10];
+    char nombreArchivoBinario[60],nombreArchivoError[60],*nombreArchivoTexto="miembros-VC.txt",aux[10], op;
 
     t_fecha fechaProceso, fechaRecuperar;
     t_fecha *pf = &fechaProceso;
@@ -50,6 +50,28 @@ int main(int argc, char *argv[])
         printf("El archivo a recuperar es : %s\n",nombreArchivoBinario);
 
     /// LOGICA PARTE 2 Y MENU
+
+    op = menu(
+         "a. Alta\n"
+         "b. Baja\n"
+         "c. Modificacion\n"
+         "d. Mostrar informacion de un miembro\n"
+         "e. Listado de miembros ordenados por DNI\n"
+         "f. Listado de todos los miembros agrupados por plan\n"
+         "g. Salir\n",
+         "abcdefg"
+         );
+    do{
+        switch(op){
+            case 'a':  break;
+            case 'b':  break;
+            case 'c':  break;
+            case 'd':  break;
+            case 'e':  break;
+            case 'f':  break;
+        }
+    }while(op != 'g');
+
     return 0;
 }
 /*
