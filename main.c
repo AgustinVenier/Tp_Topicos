@@ -51,7 +51,14 @@ int main(int argc, char *argv[])
     }
 
         else
-        printf("El archivo a recuperar es : %s\n",nombreArchivoBinario);
+        {
+            strcpy(aux,subcarpeta_binario);
+            strcat(aux,"/");
+            strcat(aux,nombreArchivoBinario);
+            strcpy(nombreArchivoBinario,aux);
+            printf("El archivo a recuperar es : %s\n",nombreArchivoBinario);
+        }
+    mostrarMiembros(nombreArchivoBinario);
 
     /// LOGICA PARTE 2 Y MENU
 
