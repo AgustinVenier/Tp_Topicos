@@ -64,6 +64,13 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo); //devuelve el nombre 
 
 //Parte 2
 char menu(const char *msj, const char *opc);
+int validaciones(const t_miembro *m, const t_fecha *fecha);
+void Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
+void Baja(const char *nombreArch, t_indice *ind);
 
+void Modificacion(nombreArchivoBinario, &indice, &fechaProceso);
+void MostrarInfoMiembro(nombreArchivoBinario,&indice);
+void ListadoXDNI(nombreArchivoBinario, &indice);
+void ListadoXPlan(nombreArchivoBinario, &indice);
 
 #endif // FUNCTIONS_H_INCLUDED

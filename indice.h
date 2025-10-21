@@ -30,6 +30,8 @@ int (*cmp)(const void *, const void *));
 int indice_eliminar(t_indice *indice, const void *registro, size_t tamanyo, int
 (*cmp)(const void *, const void *));
 
+int cmp_por_dni(const void *a, const void *b);
+
 int indice_buscar (const t_indice *indice, const void *registro, size_t nmemb,
 size_t tamanyo, int (*cmp)(const void *, const void *));
 

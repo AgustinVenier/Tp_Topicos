@@ -10,6 +10,10 @@ int main(int argc, char *argv[])
     t_fecha *pf = &fechaProceso;
     //t_fecha *pr = &fechaRecuperar;
 
+
+    t_indice indice;
+
+
     printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
     scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
     valorFechaProc = validarFecha(pf);   // pf es puntero válido
@@ -63,12 +67,24 @@ int main(int argc, char *argv[])
          );
     do{
         switch(op){
-            case 'a':  break;
-            case 'b':  break;
-            case 'c':  break;
-            case 'd':  break;
-            case 'e':  break;
-            case 'f':  break;
+            case 'a':
+                Alta(nombreArchivoBinario,&indice, &fechaProceso);
+                break;
+            case 'b':
+                Baja(nombreArchivoBinario, &indice);
+                break;
+            case 'c':
+                Modificacion(nombreArchivoBinario, &indice, &fechaProceso);
+                break;
+            case 'd':
+                MostrarInfoMiembro(nombreArchivoBinario,&indice);
+                break;
+            case 'e':
+                ListadoXDNI(nombreArchivoBinario, &indice);
+                break;
+            case 'f':
+                ListadoXPlan(nombreArchivoBinario, &indice);
+                break;
         }
     }while(op != 'g');
 
