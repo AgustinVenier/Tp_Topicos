@@ -55,39 +55,7 @@ int main(int argc, char *argv[])
 
     /// LOGICA PARTE 2 Y MENU
 
-    op = menu(
-         "a. Alta\n"
-         "b. Baja\n"
-         "c. Modificacion\n"
-         "d. Mostrar informacion de un miembro\n"
-         "e. Listado de miembros ordenados por DNI\n"
-         "f. Listado de todos los miembros agrupados por plan\n"
-         "g. Salir\n",
-         "abcdefg"
-         );
-    do{
-        switch(op){
-            case 'a':
-                Alta(nombreArchivoBinario,&indice, &fechaProceso);
-                break;
-            case 'b':
-                Baja(nombreArchivoBinario, &indice);
-                break;
-            case 'c':
-                Modificacion(nombreArchivoBinario, &indice, &fechaProceso);
-                break;
-            case 'd':
-                MostrarInfoMiembro(nombreArchivoBinario,&indice);
-                break;
-            case 'e':
-                ListadoXDNI(nombreArchivoBinario, &indice);
-                break;
-            case 'f':
-                ListadoXPlan(nombreArchivoBinario, &indice);
-                break;
-        }
-    }while(op != 'g');
-
+    menuMiembros(nombreArchivoBinario);
     return 0;
 }
 /*

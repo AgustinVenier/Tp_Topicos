@@ -100,23 +100,49 @@ size_t tamanyo, int (*cmp)(const void *, const void *))
     return -1; // no encontrado
 }
 
-int indice_lleno(const t_indice *indice)
-
 int indice_vacio(const t_indice *indice)
-
+{
+    if(indice->cantidad_elementos_actual == 0)
+        return OK;
+    return ERROR;
+}
 int indice_lleno(const t_indice *indice)
+{
+    if(indice->cantidad_elementos_actual == indice->cantidad_elementos_maxima)
+        return OK;
+    return ERROR;
+}
 
 void indice_vaciar(t_indice* indice)
+{
+    free(indice->datos);
+    indice->cantidad_elementos_actual = 0;
+    indice->cantidad_elementos_total = 0;
+    indice->datos == NULL;
+}
 
 int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
-tamanyo, int (*cmp)(const void *, const void *))
+tamanyo, int (*cmp)(const void *, const void *)) ///no se si esta bien, revisar
 {
     FILE *arch = fopen(path, "rb");
+    int n = 1;
     if(!arch)
     {
         printf("No se ha podido abrir el archivo...\n");
         return ERROR;
         exit(ERROR);
     }
-    while(fread())
+
+    while(fread(vreg_ind, sizeof(tamanyo), 1, arch))
+    {
+        indice->datos->dni = vreg_ind->dni;
+        indice->datos->nro_reg = n++;
+        indice->cantidad_elementos_actual++;
+    }
+
+    ordenamientoBurbujeo(vreg_ind, n, sizeof(tamanyo), cmp)/// ???
+
+    close(arch);
+
+    return OK;
 }
