@@ -6,7 +6,7 @@
 
 void indice_crear(t_indice *indice, size_t nmemb, size_t tamanyo)
 {
-    indice->vindice = (tamanyo *) malloc(nmemb * sizeof(tamanyo));
+    indice->vindice = malloc(nmemb * tamanyo);
     if(!indice->vindice)
     {
         printf("No se ha podido asignar memoria\n");
@@ -15,41 +15,35 @@ void indice_crear(t_indice *indice, size_t nmemb, size_t tamanyo)
     indice->cantidad_elementos_actual = 0;
     indice->cantidad_elementos_maxima = nmemb;
 }
+
 void indice_redimensionar(t_indice *indice, size_t nmemb, size_t tamanyo)
 {
-    indice->vindice = realloc(indice->vindice, (nmemb * INCREMENTO) * sizeof(tamanyo));
+    indice->vindice = realloc(indice->vindice, (nmemb * INCREMENTO) * tamanyo);   ///a preguntar (nmemb * INCREMENTO)
     if(!indice->vindice)
     {
         printf("No se ha podido asignar memoria\n");
         exit(ERROR);
     }
     indice->cantidad_elementos_actual = 0;
-    indice->cantidad_elementos_maxima = nmemb * INCREMENTO;
+    indice->cantidad_elementos_maxima = nmemb * INCREMENTO; ///VA A DAR CON UN NUMERO DECIMAL
 }
 int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
 int (*cmp)(const void *, const void *))
 {
     int i;
     // Buscar si ya existe
-    for (i = 0; i < indice->cant; i++)
-    {
-        if (cmp(registro, &indice->registros[i]) == 0)
-        {
-            printf("Error: registro duplicado.\n");
-            return ERROR;
-        }
-    }
-    // Verificar capacidad
-    if (indice->cant >= 1000)
-    {
-        printf("Error: índice lleno.\n");
+    if(indice_buscar(indice,registro,indice->cantidad_elementos_actual,tamanyo,cmp)!=NO_EXISTE){
         return ERROR;
     }
+    // Verificar capacidad
+    if (indice_lleno==OK){
+        indice_redimensionar(indice,indice->cantidad_elementos_actual,tamanyo);
+    }
     // Insertar al final
-    memcpy(&indice->registros[indice->cant], registro, tamanyo);
-    indice->cant++;
+    memcpy(indice->vindice+(indice->cantidad_elementos_actual*tamanyo), registro, tamanyo);
+    indice->cantidad_elementos_actual++; ///no se si funciona
 
-    return EXITO;
+    return OK;
 }
 
 int indice_eliminar(t_indice *indice, const void *registro, size_t tamanyo, int
@@ -74,30 +68,10 @@ int indice_eliminar(t_indice *indice, const void *registro, size_t tamanyo, int
     return EXITO;
 }
 
-int cmp_por_dni(const void *a, const void *b)
-{
-    const t_reg_indice *r1 = (const t_reg_indice *)a;
-    const t_reg_indice *r2 = (const t_reg_indice *)b;
-
-    if (r1->dni < r2->dni)
-        return -1;
-    if (r1->dni > r2->dni)
-        return 1;
-    return 0;
-}
-
 int indice_buscar (const t_indice *indice, const void *registro, size_t nmemb,
 size_t tamanyo, int (*cmp)(const void *, const void *))
 {
-    const char *p = (const char *)indice->registros;
-    size_t i;
-    for (i = 0; i < nmemb; i++)
-    {
-        const void *elem = p + i * tamanyo;
-        if (cmp(registro, elem) == 0)
-            return (int)i;  // encontrado
-    }
-    return -1; // no encontrado
+    return busquedaBinaria(indice->vindice,registro,nmemb,tamanyo,cmp);
 }
 
 int indice_vacio(const t_indice *indice)
@@ -115,34 +89,58 @@ int indice_lleno(const t_indice *indice)
 
 void indice_vaciar(t_indice* indice)
 {
-    free(indice->datos);
+    free(indice->vindice);
     indice->cantidad_elementos_actual = 0;
     indice->cantidad_elementos_total = 0;
-    indice->datos == NULL;
+    indice->vindice == NULL; ///no se si va esto
 }
 
 int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
 tamanyo, int (*cmp)(const void *, const void *)) ///no se si esta bien, revisar
 {
     FILE *arch = fopen(path, "rb");
-    int n = 1;
     if(!arch)
     {
-        printf("No se ha podido abrir el archivo...\n");
         return ERROR;
-        exit(ERROR);
     }
 
-    while(fread(vreg_ind, sizeof(tamanyo), 1, arch))
+    while(fread(vreg_ind, tamanyo, 1, arch))
     {
-        indice->datos->dni = vreg_ind->dni;
-        indice->datos->nro_reg = n++;
-        indice->cantidad_elementos_actual++;
+        indice_insertar(indice,vreg_ind,tamanyo,cmp);
     }
-
-    ordenamientoBurbujeo(vreg_ind, n, sizeof(tamanyo), cmp)/// ???
 
     close(arch);
-
     return OK;
+}
+
+
+
+int cmp_por_dni(const void *a, const void *b)
+{
+    const t_reg_indice *r1 = (const t_reg_indice *)a;
+    const t_reg_indice *r2 = (const t_reg_indice *)b;
+
+    return (r1->dni - r2->dni);
+}
+
+int busquedaBinaria(void *vec, void *buscado, unsigned *cantelem, size_t tamanyo, int(*cmp)(const void *, const void*)){
+    int i = 0, f = (*cantelem) - 1, medio, res;
+
+    while(i <= f){
+
+        medio = (i + f)/2;
+
+        res = cmp(buscado, vec + (medio * tamanyo));
+
+        if(!res){
+            //Devuelve la posicion donde se encontro el elemento
+            return medio;
+        } else if(res < 0){
+            f = medio - 1;
+        } else {
+            i = medio + 1;
+        }
+    }
+
+    return NO_EXISTE;
 }
