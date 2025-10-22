@@ -30,7 +30,6 @@ void indice_redimensionar(t_indice *indice, size_t nmemb, size_t tamanyo)
 int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
                      int (*cmp)(const void *, const void *))
 {
-    int i;
     // Buscar si ya existe
     if(indice_buscar(indice,registro,indice->cantidad_elementos_actual,tamanyo,cmp)!=NO_EXISTE)
     {
@@ -94,7 +93,8 @@ int indice_lleno(const t_indice *indice)
 
 void indice_vaciar(t_indice *indice)
 {
-    if (!indice) return ERROR;
+    if (!indice)
+        return ERROR;
     free(indice->vindice);
     indice->vindice = NULL;
     indice->cantidad_elementos_actual = 0;

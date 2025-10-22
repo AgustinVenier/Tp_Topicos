@@ -2,11 +2,11 @@
 
 int main(int argc, char *argv[])
 {
-    int procesamiento,valorFechaProc, i = 0;
+    int procesamiento,valorFechaProc/* i = 0*/;
     char *subcarpeta_binario="ArchivoBinario",*subcarpeta_error="ArchivoTextoError";
     char nombreArchivoBinario[60],nombreArchivoError[60],*nombreArchivoTexto="miembros-VC.txt",aux[10];
 
-    t_fecha fechaProceso, fechaRecuperar;
+    t_fecha fechaProceso/*, fechaRecuperar*/;
     t_fecha *pf = &fechaProceso;
     //t_fecha *pr = &fechaRecuperar;
 
@@ -58,11 +58,10 @@ int main(int argc, char *argv[])
             strcpy(nombreArchivoBinario,aux);
             printf("El archivo a recuperar es : %s\n",nombreArchivoBinario);
         }
-    mostrarMiembros(nombreArchivoBinario);
+    mostrarMiembros(nombreArchivoBinario);    //Muestro miembros del archivo
 
     /// LOGICA PARTE 2 Y MENU
-
-    menuMiembros(nombreArchivoBinario);
+    menuMiembros(nombreArchivoBinario,&indice, &fechaProceso);
     return 0;
 }
 /*

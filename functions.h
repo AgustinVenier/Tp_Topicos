@@ -8,7 +8,7 @@
 #include "indice.h"
 
 #define EXITO 0
-#define ERROR 1
+#define CHAU 1   //este se cambia
 #define BUFFER 250
 #define FORMATO_FECHA "%d/%d/%d"
 #define dniValido(a) (1000000<(a)&&(a)<100000000)
@@ -45,7 +45,7 @@ typedef struct
 int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso);
 
 //Validacion General
-int validaciones(t_miembro *,const t_fecha* f_proceso);
+int validaciones(const t_miembro *, const t_fecha* f_proceso);
 
 //Validaciones Campos
 
@@ -62,14 +62,18 @@ int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_f
 //Directorios Archivos
 void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo); //devuelve el nombre de  un archivo de esa subcarpeta
 
-//Parte 2
-char menu(const char *msj, const char *opc);
-void Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
-void Baja(const char *nombreArch, t_indice *ind);
+void mostrarMiembros(const char *nombreArch);
 
-void Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
-void MostrarInfoMiembro(const char *nombreArch, t_indice *ind);
-void ListadoXDNI(const char *nombreArch, t_indice *ind);
-void ListadoXPlan(const char *nombreArch, t_indice *ind);
+//Parte 2
+void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
+char menu(const char *msj, const char *opc);
+void eliminarFinDeLinea(char *cad);
+int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
+int Baja(const char *nombreArch, t_indice *ind);
+int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
+
+int MostrarInfoMiembro(const char *nombreArch, t_indice *ind);
+int ListadoXDNI(const char *nombreArch, t_indice *ind);
+int ListadoXPlan(const char *nombreArch, t_indice *ind);
 
 #endif // FUNCTIONS_H_INCLUDED

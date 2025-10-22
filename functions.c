@@ -18,17 +18,17 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     if (ftexto ==NULL)
     {
         printf("Error al abrir un archivo texto");
-        return ERROR;
+        return CHAU;
     }
     if (ferror ==NULL)
     {
         printf("Error al abrir un archivo error");
-        return ERROR;
+        return CHAU;
     }
     if (fbin ==NULL)
     {
         printf("Error al abrir un archivo binario");
-        return ERROR;
+        return CHAU;
     }
 
 
@@ -50,7 +50,9 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
             fwrite(miembro, sizeof(t_miembro), 1, fbin); ///revisar
             //cantMiembros++;
         }
-        else
+
+        else 
+		if(valor == CHAU)
         {
             switch (valor)
             {
@@ -100,7 +102,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 //--------------------------------------------------------------------------------------
 ///Validacion General
 
-int validaciones(t_miembro * miembro,const t_fecha* f_proceso )
+int validaciones(const t_miembro * miembro,const t_fecha* f_proceso )
 {
     if (!dniValido(miembro->dni))
         return 1; //error en DNI
@@ -113,7 +115,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso )
     if (!sexValido(miembro->sexo))
         return 3; //error SEXO
 
-    if (fAfiliacionValido(&miembro->fecha_afi,f_proceso,&miembro->fecha_nac)==ERROR)
+    if (fAfiliacionValido(&miembro->fecha_afi,f_proceso,&miembro->fecha_nac)==CHAU)
         return 4; // error F AFILIACION
 
     if (validarFechaCategoria(miembro->cat,&miembro->fecha_nac,f_proceso))
@@ -158,7 +160,7 @@ int validarFecha(const t_fecha* f) // retorna 0 valido, 1 invalido
 
     if (f->mes < 1 || f->mes > 12) // Validar mes
     {
-        return ERROR;
+        return CHAU;
     }
 
     // Calcular d�as del mes
@@ -179,12 +181,12 @@ int validarFecha(const t_fecha* f) // retorna 0 valido, 1 invalido
 
     if (f->dia < 1 || f->dia > diasEnMes) // Validar d�a
     {
-        return ERROR;
+        return CHAU;
     }
 
     if (f->anio < 1) // Validar año
     {
-        return ERROR;
+        return CHAU;
     }
     return EXITO;
 }
@@ -241,7 +243,7 @@ int validarEmail(char *cad)
 {
     char* pc=cad;
     if(strcmp(pc,"")==0)
-        return ERROR;
+        return CHAU;
     pc=strchr(pc,'@');
 
     if(pc!=NULL && isalnum(*(pc-1)) && isalpha(*(pc+1)))  /// el de adelante del @ alphanum? o solo letra?
@@ -250,7 +252,7 @@ int validarEmail(char *cad)
         if(pc!=NULL && isalpha(*(pc-1)) && isalpha(*(pc+1)))  /// el de adelante y atras del . alphanum? o solo letra?
             return EXITO;
     }
-    return ERROR;
+    return CHAU;
 }
 
 
@@ -262,36 +264,36 @@ int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f
       if(strcmpi(categ, "MENOR") == 0)
             return EXITO;
         else
-            return ERROR;
+            return CHAU;
     }
     if(strcmpi(categ, "ADULTO") == 0)
         return EXITO;
-    return ERROR;
+    return CHAU;
 }
 
 
 
 int fNacValido(const t_fecha* fechaNac,const t_fecha * f_proceso)
 {
-    if (validarFecha(fechaNac) == ERROR)
-        return ERROR;
+    if (validarFecha(fechaNac) == CHAU)
+        return CHAU;
 
-    if (validarFechaNacimiento(fechaNac,f_proceso,10) == ERROR) //pasaron 10 o mas anios
-        return ERROR;
+    if (validarFechaNacimiento(fechaNac,f_proceso,10) == CHAU) //pasaron 10 o mas anios
+        return CHAU;
 
     return EXITO;
 }
 
 int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t_fecha* fechaNac)
 {
-    if (validarFecha(fechaAfi) == ERROR)
-        return ERROR;
+    if (validarFecha(fechaAfi) == CHAU)
+        return CHAU;
 
     if (compararFecha(fechaAfi, fechaProc) > 0) // afiliación > proceso // creo que el problema esta en esta linea
-        return ERROR;
+        return CHAU;
 
     if (compararFecha(fechaAfi, fechaNac) <= 0) // afiliación <= nacimiento
-        return ERROR;
+        return CHAU;
 
     return EXITO;
 }
@@ -299,10 +301,10 @@ int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t
 int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc)
 {
     if (compararFecha(fechaCuota, fechaAfi) <= 0) // cuota <= afiliación
-        return ERROR;
+        return CHAU;
 
     if (compararFecha(fechaCuota, fechaProc) > 0) // cuota > proceso
-        return ERROR;
+        return CHAU;
 
     return EXITO;
 }
@@ -339,3 +341,34 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
     return ;
 }
 
+
+
+void mostrarMiembros(const char *nombreArch)
+{
+    FILE *pf;
+    t_miembro miembro;
+
+    pf = fopen(nombreArch, "rb");
+    if (!pf)
+    {
+        printf("No se pudo abrir el archivo binario: %s\n", nombreArch);
+        return;
+    }
+
+    printf("\n--- Miembros procesados ---\n");
+    while (fread(&miembro, sizeof(t_miembro), 1, pf) == 1)
+    {
+        printf("DNI: %ld\n", miembro.dni);
+        printf("Nombre y Apellido: %s\n", miembro.nya);
+        printf("Fecha de Nacimiento: %02d/%02d/%04d\n", miembro.fecha_nac.dia, miembro.fecha_nac.mes, miembro.fecha_nac.anio);
+        printf("Sexo: %c\n", miembro.sexo);
+        printf("Fecha de Afiliación: %02d/%02d/%04d\n", miembro.fecha_afi.dia, miembro.fecha_afi.mes, miembro.fecha_afi.anio);
+        printf("Categoría: %s\n", miembro.cat);
+        printf("Fecha de última Cuota: %02d/%02d/%04d\n", miembro.fecha_cuota.dia, miembro.fecha_cuota.mes, miembro.fecha_cuota.anio);
+        printf("Estado: %c\n", miembro.estado);
+        printf("Plan: %s\n", miembro.plan);
+        printf("Email: %s\n", miembro.email);
+        printf("-------------------------------\n");
+    }
+    fclose(pf);
+}
