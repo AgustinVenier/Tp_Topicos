@@ -6,7 +6,7 @@
 
 int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso)
 {
-    char cad[BUFFER];
+    char cad[BUFFER],aux[BUFFER];
     t_miembro m1;
     t_miembro *miembro = &m1;
     int valor;
@@ -46,12 +46,45 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 
         if(valor == EXITO)
         {
+
             fwrite(miembro, sizeof(t_miembro), 1, fbin); ///revisar
             //cantMiembros++;
         }
-        else if(valor == ERROR)
+        else
         {
-            fprintf(ferror, "%s", cad);
+            switch (valor)
+            {
+                case 1:
+                strcpy(aux,"\"Error en campo DNI\",");
+                break;
+                case 2:
+                strcpy(aux,"\"Error en campo F NACIMIENTO\",");
+                break;
+                case 3:
+                strcpy(aux,"\"Error en campo SEXO\",");
+                break;
+                case 4:
+                strcpy(aux,"\"Error en campo F AFILIACION\",");
+                break;
+                case 5:
+                strcpy(aux,"\"Error en campo CATEGORIA\",");
+                break;
+                case 6:
+                strcpy(aux,"\"Error en campo F ULT COUTA VALIDA\",");
+                break;
+                case 7:
+                strcpy(aux,"\"Error en campo ESTADO\",");
+                break;
+                case 8:
+                strcpy(aux,"\"Error en campo PLAN\",");
+                break;
+                case 9:
+                strcpy(aux,"\"Error en campo MAIL\",");
+                break;
+            }
+
+            strcat(aux,cad);
+            fprintf(ferror, "%s", aux);
         }
     }
     fclose(ftexto);
