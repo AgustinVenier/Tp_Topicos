@@ -12,18 +12,25 @@
 1760984578 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.c
 	"functions.h"
 
-1760536643 source:c:\users\agust\desktop\tp_topicos\tp_topicos\main.c
-	<stdio.h>
-	<stdlib.h>
-	<ctype.h>
+1761103769 source:c:\users\agust\desktop\tp_topicos\tp_topicos\main.c
 	"functions.h"
 
-1760536757 c:\users\agust\desktop\tp_topicos\tp_topicos\functions.h
+1761103769 c:\users\agust\desktop\tp_topicos\tp_topicos\functions.h
 	<stdio.h>
 	<ctype.h>
 	<string.h>
 	<time.h>
+	<dirent.h>
+	"indice.h"
 
-1760538656 source:c:\users\agust\desktop\tp_topicos\tp_topicos\functions.c
+1761103769 source:c:\users\agust\desktop\tp_topicos\tp_topicos\functions.c
 	"functions.h"
+
+1761083058 c:\users\agust\desktop\tp_topicos\tp_topicos\indice.h
+
+1761107024 source:c:\users\agust\desktop\tp_topicos\tp_topicos\indice.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"indice.h"
 

@@ -4,6 +4,7 @@
 
 void menuMiembros(const char * nombreArch)
 {
+    char op;
     op = menu(
              "a. Alta\n"
              "b. Baja\n"

@@ -28,48 +28,53 @@ void indice_redimensionar(t_indice *indice, size_t nmemb, size_t tamanyo)
     indice->cantidad_elementos_maxima = nmemb * INCREMENTO; ///VA A DAR CON UN NUMERO DECIMAL
 }
 int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
-int (*cmp)(const void *, const void *))
+                     int (*cmp)(const void *, const void *))
 {
     int i;
     // Buscar si ya existe
-    if(indice_buscar(indice,registro,indice->cantidad_elementos_actual,tamanyo,cmp)!=NO_EXISTE){
+    if(indice_buscar(indice,registro,indice->cantidad_elementos_actual,tamanyo,cmp)!=NO_EXISTE)
+    {
         return ERROR;
     }
     // Verificar capacidad
-    if (indice_lleno==OK){
+    if (indice_lleno(indice) == OK)
+    {
         indice_redimensionar(indice,indice->cantidad_elementos_actual,tamanyo);
     }
-    // Insertar al final
-    memcpy(indice->vindice+(indice->cantidad_elementos_actual*tamanyo), registro, tamanyo);
-    indice->cantidad_elementos_actual++; ///no se si funciona
+    char *base = (char*)indice->vindice;
+    memcpy(base + indice->cantidad_elementos_actual * tamanyo, registro, tamanyo);
+
+    indice->cantidad_elementos_actual++;
 
     return OK;
 }
 
-int indice_eliminar(t_indice *indice, const void *registro, size_t tamanyo, int
-(*cmp)(const void *, const void *))
+int indice_eliminar(t_indice *indice, const void *registro, size_t tamanyo, int (*cmp)(const void *, const void *))
 {
-    int i, pos = -1;
-    for (i = 0; i < indice->cant; i++) // Buscar posición del registro a eliminar
-    {
-        void *elem = (char *)indice->registros + i * tamanyo;
-        if (cmp(registro, elem) == 0)
-            pos = i;
-    }
-    if (pos == -1)// Si no se encontró
-        return 0;
+    if (!indice || !indice->vindice || indice->cantidad_elementos_actual == 0)
+        return ERROR;
 
-    for (i = pos; i < indice->cant - 1; i++) // Mover los registros siguientes una posición atrás
+    int pos = indice_buscar(indice, registro, indice->cantidad_elementos_actual, tamanyo, cmp);
+
+    if (pos == NO_EXISTE)
+        return ERROR;
+
+    size_t ult = indice->cantidad_elementos_actual - 1;
+
+    // Si no estamos eliminando el último, desplazamos la “cola” una posición a la izquierda
+    if ((size_t)pos < ult)
     {
-        memcpy((char *)indice->registros + i * tamanyo,(char *)indice->registros + (i + 1) * tamanyo, tamanyo);
+        char *base = (char *)indice->vindice;
+        memmove(base + pos * tamanyo, base + (pos + 1) * tamanyo, (ult - pos) * tamanyo);
     }
 
-    indice->cant--; // Decrementar cantidad de registros
-    return EXITO;
+    indice->cantidad_elementos_actual--;
+    return OK;
 }
 
+
 int indice_buscar (const t_indice *indice, const void *registro, size_t nmemb,
-size_t tamanyo, int (*cmp)(const void *, const void *))
+                   size_t tamanyo, int (*cmp)(const void *, const void *))
 {
     return busquedaBinaria(indice->vindice,registro,nmemb,tamanyo,cmp);
 }
@@ -87,16 +92,18 @@ int indice_lleno(const t_indice *indice)
     return ERROR;
 }
 
-void indice_vaciar(t_indice* indice)
+void indice_vaciar(t_indice *indice)
 {
+    if (!indice) return ERROR;
     free(indice->vindice);
+    indice->vindice = NULL;
     indice->cantidad_elementos_actual = 0;
-    indice->cantidad_elementos_total = 0;
-    indice->vindice == NULL; ///no se si va esto
+    indice->cantidad_elementos_maxima = 0;
 }
 
+// suponemos que el registro de indice temporal que se carga es válido.
 int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
-tamanyo, int (*cmp)(const void *, const void *)) ///no se si esta bien, revisar
+                  tamanyo, int (*cmp)(const void *, const void *)) ///no se si esta bien, revisar
 {
     FILE *arch = fopen(path, "rb");
     if(!arch)
@@ -109,7 +116,7 @@ tamanyo, int (*cmp)(const void *, const void *)) ///no se si esta bien, revisar
         indice_insertar(indice,vreg_ind,tamanyo,cmp);
     }
 
-    close(arch);
+    fclose(arch);
     return OK;
 }
 
@@ -123,21 +130,28 @@ int cmp_por_dni(const void *a, const void *b)
     return (r1->dni - r2->dni);
 }
 
-int busquedaBinaria(void *vec, void *buscado, unsigned *cantelem, size_t tamanyo, int(*cmp)(const void *, const void*)){
+int busquedaBinaria(void *vec, void *buscado, unsigned *cantelem, size_t tamanyo, int(*cmp)(const void *, const void*))
+{
     int i = 0, f = (*cantelem) - 1, medio, res;
 
-    while(i <= f){
+    while(i <= f)
+    {
 
         medio = (i + f)/2;
 
         res = cmp(buscado, vec + (medio * tamanyo));
 
-        if(!res){
+        if(!res)
+        {
             //Devuelve la posicion donde se encontro el elemento
             return medio;
-        } else if(res < 0){
+        }
+        else if(res < 0)
+        {
             f = medio - 1;
-        } else {
+        }
+        else
+        {
             i = medio + 1;
         }
     }

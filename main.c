@@ -4,7 +4,7 @@ int main(int argc, char *argv[])
 {
     int procesamiento,valorFechaProc, i = 0;
     char *subcarpeta_binario="ArchivoBinario",*subcarpeta_error="ArchivoTextoError";
-    char nombreArchivoBinario[60],nombreArchivoError[60],*nombreArchivoTexto="miembros-VC.txt",aux[10], op;
+    char nombreArchivoBinario[60],nombreArchivoError[60],*nombreArchivoTexto="miembros-VC.txt",aux[10];
 
     t_fecha fechaProceso, fechaRecuperar;
     t_fecha *pf = &fechaProceso;
