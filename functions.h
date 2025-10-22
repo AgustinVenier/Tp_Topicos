@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h> // se usa???
 #include <dirent.h>   // Para manejar directorios
-
+#include "indice.h"
 
 #define EXITO 0
 #define ERROR 1
@@ -64,13 +64,12 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo); //devuelve el nombre 
 
 //Parte 2
 char menu(const char *msj, const char *opc);
-int validaciones(const t_miembro *m, const t_fecha *fecha);
 void Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
 void Baja(const char *nombreArch, t_indice *ind);
 
-void Modificacion(nombreArchivoBinario, &indice, &fechaProceso);
-void MostrarInfoMiembro(nombreArchivoBinario,&indice);
-void ListadoXDNI(nombreArchivoBinario, &indice);
-void ListadoXPlan(nombreArchivoBinario, &indice);
+void Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
+void MostrarInfoMiembro(const char *nombreArch, t_indice *ind);
+void ListadoXDNI(const char *nombreArch, t_indice *ind);
+void ListadoXPlan(const char *nombreArch, t_indice *ind);
 
 #endif // FUNCTIONS_H_INCLUDED
