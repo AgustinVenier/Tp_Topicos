@@ -128,7 +128,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso )
     if (!planValido(miembro->plan))
         return 8; //error PLAN
 
-    if(!strcmpi(miembro->cat,"MENOR"))
+    if(strcmp(miembro->email,"")!=0  && !strcmpi(miembro->cat,"MENOR"))
     {
         if (validarEmail(miembro->email))
             return 9; // error MAIL

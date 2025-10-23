@@ -457,11 +457,11 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
 
 
     for(i=0;i<4;i++){
+        printf("------Plan %s------\n",(planes+i));
         for(n=0;n<ind->cantidad_elementos_actual;n++){
             fseek(pf,sizeof(t_miembro)*((vecInd+n)->nro_reg),0);
             fread(&aux,sizeof(t_miembro),1,pf);
             if(strcmpi(*(planes+i),aux.plan)==0 && toupper(aux.estado)=='A'){
-                printf("------ESTADO %c------\n",aux.estado);
                 printf("DNI: %ld\n", aux.dni);
                 printf("Nombre y Apellido: %s\n", aux.nya);
                 printf("Fecha de Nacimiento: %02d/%02d/%04d\n", aux.fecha_nac.dia, aux.fecha_nac.mes, aux.fecha_nac.anio);
