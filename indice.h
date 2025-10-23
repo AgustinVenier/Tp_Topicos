@@ -37,8 +37,6 @@ int cmp_por_dni(const void *a, const void *b);
 int indice_buscar (const t_indice *indice, const void *registro, size_t nmemb,
                    size_t tamanyo, int (*cmp)(const void *, const void *));
 
-int indice_lleno(const t_indice *indice);
-
 int indice_vacio(const t_indice *indice);
 
 int indice_lleno(const t_indice *indice);
@@ -50,12 +48,9 @@ int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
 
 void indice_mostrar(const t_indice *ind);
 
-//eliminar si no se utilizan
-
 int busquedaBinaria(const void *vec,const void *buscado, unsigned cantelem, size_t tamanyo, int(*cmp)(const void *, const void*));
 
-void ordenamientoBurbujeo(void *vec, unsigned nmemb, size_t tamanyo, int (*cmp)(const void *, const void *));
-
-void intercambio(void *a, void *b, size_t tamanyo);
+/*void ordenamientoBurbujeo(void *vec, unsigned nmemb, size_t tamanyo, int (*cmp)(const void *, const void *));
+//void intercambio(void *a, void *b, size_t tamanyo);*/   ///se sacan?
 
 #endif // INDICE_H_INCLUDED

@@ -1,7 +1,7 @@
 #include "functions.h"
 #include "indice.h"
 #include <stdlib.h>
-
+#include <unistd.h>
 void mostrarIndice(t_indice *indice) /// BORRAR PAR ENTREGAR SOLO ES TEST
 {
     int i;
@@ -41,6 +41,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 printf("Error al dar de alta el miembro.\n");
             else
                 printf("Alta realizada con exito.\n");
+            sleep(2);
             break;
 
         case 'b':
@@ -49,6 +50,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 printf("Error al dar la baja del miembro.\n");
             else
                 printf("Baja realizada con exito.\n");
+            sleep(2);
             break;
 
         case 'c':
@@ -57,6 +59,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 printf("Error al modificar el miembro.\n");
             else
                 printf("Modificacion realizada con exito.\n");
+            sleep(2);
             break;
 
         case 'd':
@@ -65,6 +68,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 printf("Error al mostrar\n");
             else
                 printf("Realizada con exito.\n");
+            sleep(3);
             break;
 
         case 'e':
@@ -73,6 +77,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 printf("Error al listar\n");
             else
                 printf("Realizada con exito.\n");
+            sleep(4);
             break;
 
         case 'f':
@@ -81,6 +86,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 printf("Error al Listar\n");
             else
                 printf("Realizada con exito.\n");
+            sleep(4);
             break;
         }
     }
@@ -98,16 +104,18 @@ char menu(const char *msj, const char *opc)
 {
     char opta;
     int priVez = 1;
-
+    printf("\n=============================================\n");
+    printf("            GESTION DE MIEMBROS\n");
+    printf("=============================================\n");
     do
     {
+        fflush(stdin);
         printf("%s%s",
                priVez ? priVez = 0, "" : "ERROR - Opcion No valida\n",
                msj);
-        fflush(stdin);
-        scanf("%c", &opta);
-    }
-    while(strchr(opc, opta) == NULL);   //busca el carácter dentro del conjunto de válidos
+        printf("\nIngrese seleccion: ");
+        scanf(" %c", &opta);
+    }while(strchr(opc, opta) == NULL);   //busca el carácter dentro del conjunto de válidos
     return opta;
 }
 
@@ -185,7 +193,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     normalizar(m.nya);
     if ( toupper(m.estado)=='B' || validaciones(&m, fecha) != EXITO)
     {
-        printf("Registro inválido según validaciones. Alta cancelada.\n");
+        printf("Registro invalido según validaciones. Alta cancelada.\n");
         fclose(pf);
         return ERROR;
     }
@@ -209,7 +217,6 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 
 int Baja(const char *nombreArch, t_indice *ind)
 {
-    //long dni;
     int pos;
     t_miembro m;
     t_reg_indice clave; //Estructura auxiliar para verificar
@@ -220,7 +227,7 @@ int Baja(const char *nombreArch, t_indice *ind)
     clave.dni = m.dni;
     // Busco posición en el índice
     pos = indice_buscar(ind, &clave, ind->cantidad_elementos_actual, sizeof(t_reg_indice), cmp_por_dni);
-    if (pos == -1)
+    if (pos == NO_EXISTE)
     {
         printf("No existe miembro con DNI %ld\n", clave.dni);
         return ERROR;
@@ -241,7 +248,7 @@ int Baja(const char *nombreArch, t_indice *ind)
 
     if (m.estado == 'B') /// esto no deberia pasar xq si esta dado de baja no esta en el vector indice
     {
-        printf("El registro ya está dado de baja.\n");
+        printf("El registro ya esta dado de baja.\n");
         fclose(pf);
         indice_eliminar(ind, &clave, sizeof(t_reg_indice), cmp_por_dni);
         return OK;
@@ -257,7 +264,6 @@ int Baja(const char *nombreArch, t_indice *ind)
     return OK;
 }
 
-
 int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 {
     t_miembro m;
@@ -271,7 +277,7 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     clave.dni = m.dni;
 
     int pos = indice_buscar(ind, &clave, ind->cantidad_elementos_actual, sizeof(t_reg_indice), cmp_por_dni);
-    if(pos == -1)
+    if(pos == NO_EXISTE)
     {
         printf("No se encontro el DNI.\n");
         return ERROR;
@@ -355,7 +361,7 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         fflush(stdin);
     }
 
-    if(validaciones(&m, fecha) != 0)///CAMBIAR != 0
+    if(validaciones(&m, fecha) != ERROR)
     {
         fclose(pf);
         return ERROR;
@@ -380,7 +386,7 @@ int MostrarInfoMiembro(const char *nombreArch, t_indice *ind)
     clave.dni = m.dni;
 
     int pos = indice_buscar(ind, &clave, ind->cantidad_elementos_actual, sizeof(t_reg_indice), cmp_por_dni);
-    if(pos == -1)
+    if(pos == NO_EXISTE)
     {
         printf("No se encontro el DNI.\n");
         return ERROR;
@@ -415,7 +421,7 @@ int ListadoXDNI(const char *nombreArch, t_indice *ind)
 
     if (ind->cantidad_elementos_actual == 0)
     {
-        printf("\nNo hay registros en el índice.\n");
+        printf("\nNo hay registros en el indice.\n");
         fclose(pf);
         return ERROR;
     }
@@ -470,11 +476,9 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
 
     t_reg_indice *vecInd = (t_reg_indice *)ind->vindice;    // Casteo el vector del índice al tipo correcto
 
-
-
-    for(i=0; i<4; i++)
+    for(i=0; i<4; i++)  //4?
     {
-        printf("------Plan %s------\n",(planes[i]));
+        printf("\n\n------Plan %s------\n",(planes[i]));
         for(n=0; n<ind->cantidad_elementos_actual; n++)
         {
             fseek(pf,sizeof(t_miembro)*((vecInd+n)->nro_reg),0);
@@ -485,9 +489,9 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
                 printf("Nombre y Apellido: %s\n", aux.nya);
                 printf("Fecha de Nacimiento: %02d/%02d/%04d\n", aux.fecha_nac.dia, aux.fecha_nac.mes, aux.fecha_nac.anio);
                 printf("Sexo: %c\n", aux.sexo);
-                printf("Fecha de Afiliación: %02d/%02d/%04d\n", aux.fecha_afi.dia, aux.fecha_afi.mes, aux.fecha_afi.anio);
+                printf("Fecha de Afiliacion: %02d/%02d/%04d\n", aux.fecha_afi.dia, aux.fecha_afi.mes, aux.fecha_afi.anio);
                 printf("Categoría: %s\n", aux.cat);
-                printf("Fecha de última Cuota: %02d/%02d/%04d\n", aux.fecha_cuota.dia, aux.fecha_cuota.mes, aux.fecha_cuota.anio);
+                printf("Fecha de ultima Cuota: %02d/%02d/%04d\n", aux.fecha_cuota.dia, aux.fecha_cuota.mes, aux.fecha_cuota.anio);
                 printf("Estado: %c\n", aux.estado);
                 printf("Plan: %s\n", aux.plan);
                 printf("Email: %s\n", aux.email);
@@ -505,7 +509,6 @@ void preguntarCambio(const char * cad, char* aux)
     printf("Desea cambiar %s (S/N): ", cad);
     do
     {
-
         scanf("%c", aux);
         fflush(stdin);
         if(toupper(*aux)!='S' && toupper(*aux)!='N')

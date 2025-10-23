@@ -7,8 +7,6 @@
 #include "indice.h"
 
 
-
-
 #define EXITO 0
 #define FALLA 1   //este se cambia
 #define BUFFER 250

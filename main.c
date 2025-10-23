@@ -6,17 +6,12 @@
 
 int main(int argc, char *argv[])
 {
-    int procesamiento,valorFechaProc/* i = 0*/;
-
+    int procesamiento,valorFechaProc;
     char nombreArchivoBinario[60],nombreArchivoError[60];
 
-    t_fecha fechaProceso/*, fechaRecuperar*/;
+    t_fecha fechaProceso;
     t_fecha *pf = &fechaProceso;
-    //t_fecha *pr = &fechaRecuperar;
-
-
     t_indice indice;
-
 
     printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
     scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
@@ -28,7 +23,6 @@ int main(int argc, char *argv[])
         fflush(stdin);
         scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
         valorFechaProc = validarFecha(pf);
-
     }
 
     LeeSubCarpeta(subcarpeta_binario,nombreArchivoBinario);
@@ -43,8 +37,7 @@ int main(int argc, char *argv[])
     }
     printf("Nombre archivo binario:%s",nombreArchivoBinario);
 
-
-    mostrarMiembros(nombreArchivoBinario); ///MOSTRAR POR MIEMBRO
+    mostrarMiembros(nombreArchivoBinario); //Solo para testear
 
     /// LOGICA PARTE 2 Y MENU
     indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
@@ -53,8 +46,6 @@ int main(int argc, char *argv[])
         return 0;
     }
     menuMiembros(nombreArchivoBinario,&indice, &fechaProceso);
-
-
 
     return 0;
 }
