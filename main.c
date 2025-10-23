@@ -1,10 +1,14 @@
 #include "functions.h"
 
+#define subcarpeta_binario "ArchivoBinario"
+#define subcarpeta_error  "ArchivoTextoError"
+#define nombreArchivoTexto "miembros-VC.txt"
+
 int main(int argc, char *argv[])
 {
     int procesamiento,valorFechaProc/* i = 0*/;
-    char *subcarpeta_binario="ArchivoBinario",*subcarpeta_error="ArchivoTextoError";
-    char nombreArchivoBinario[60],nombreArchivoError[60],*nombreArchivoTexto="miembros-VC.txt",aux[10];
+
+    char nombreArchivoBinario[60],nombreArchivoError[60];
 
     t_fecha fechaProceso/*, fechaRecuperar*/;
     t_fecha *pf = &fechaProceso;
@@ -19,51 +23,33 @@ int main(int argc, char *argv[])
     valorFechaProc = validarFecha(pf);   // pf es puntero válido
 
     while (valorFechaProc == FALLA)
-        {
-                printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
-                fflush(stdin);
-                scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
-                valorFechaProc = validarFecha(pf);
+    {
+        printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
+        fflush(stdin);
+        scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
+        valorFechaProc = validarFecha(pf);
 
-        }
-
+    }
 
     LeeSubCarpeta(subcarpeta_binario,nombreArchivoBinario);
-    if(*nombreArchivoBinario==' ') // si no hay ningun archivo anterior en la subcarpeta
+    if(crearNombreArchivo(nombreArchivoBinario,nombreArchivoError,subcarpeta_binario,subcarpeta_error,pf))
     {
-        printf("Se procesara Archivo miembros-VC.txt , no hay archivos para recuperar \n");
-        strcpy(nombreArchivoBinario,subcarpeta_binario);
-        strcat(nombreArchivoBinario, "/miembros-VC-");
-        sprintf(aux,"%04d%02d%02d",pf->anio,pf->mes,pf->dia);
-        strcat(nombreArchivoBinario,aux);
-        strcat(nombreArchivoBinario,".dat");
-
-        strcpy(nombreArchivoError,subcarpeta_error);
-        strcat(nombreArchivoError, "/error-VC-");
-        strcat(nombreArchivoError,aux);
-        strcat(nombreArchivoError,".txt");
-
         procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,pf);
         if (procesamiento==EXITO)
             printf("Procesamiento exitoso\n");
         else
             printf("Error en el procesamiento\n");
-    }
 
-        else
-        {
-            strcpy(aux,subcarpeta_binario);
-            strcat(aux,"/");
-            strcat(aux,nombreArchivoBinario);
-            strcpy(nombreArchivoBinario,aux);
-            printf("El archivo a recuperar es : %s\n",nombreArchivoBinario);
-        }
+    }
+    printf("Nombre archivo binario:%s",nombreArchivoBinario);
+
 
     mostrarMiembros(nombreArchivoBinario); ///MOSTRAR POR MIEMBRO
 
     /// LOGICA PARTE 2 Y MENU
     indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
-    if(indice_cargar(nombreArchivoBinario,&indice,indice.vindice,sizeof(t_reg_indice),cmp_por_dni)==ERROR){
+    if(indice_cargar(nombreArchivoBinario,&indice,indice.vindice,sizeof(t_reg_indice),cmp_por_dni)==ERROR)
+    {
         return 0;
     }
     menuMiembros(nombreArchivoBinario,&indice, &fechaProceso);
@@ -123,4 +109,37 @@ t_miembro miembros[10] = {
     // 9️Menor sin email (debe tenerlo)
     {90123456, "Ramos, Sofia", {2010, 1, 25}, 'F', {2020, 1, 1}, "MENOR", {2024, 1, 1}, 'A', "BASIC", ""}
 };
+*/
+/*
+//,*="miembros-VC.txt",aux[10];
+    // char *subcarpeta_binario="ArchivoBinario",*subcarpeta_error="ArchivoTextoError";
+    if(*nombreArchivoBinario==' ') // si no hay ningun archivo anterior en la subcarpeta
+    {
+        printf("Se procesara Archivo miembros-VC.txt , no hay archivos para recuperar \n");
+        strcpy(nombreArchivoBinario,subcarpeta_binario);
+        strcat(nombreArchivoBinario, "/miembros-VC-");
+        sprintf(aux,"%04d%02d%02d",pf->anio,pf->mes,pf->dia);
+        strcat(nombreArchivoBinario,aux);
+        strcat(nombreArchivoBinario,".dat");
+
+        strcpy(nombreArchivoError,subcarpeta_error);
+        strcat(nombreArchivoError, "/error-VC-");
+        strcat(nombreArchivoError,aux);
+        strcat(nombreArchivoError,".txt");
+
+        procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,pf);
+        if (procesamiento==EXITO)
+            printf("Procesamiento exitoso\n");
+        else
+            printf("Error en el procesamiento\n");
+    }
+
+        else
+        {
+            strcpy(aux,subcarpeta_binario);
+            strcat(aux,"/");
+            strcat(aux,nombreArchivoBinario);
+            strcpy(nombreArchivoBinario,aux);
+            printf("El archivo a recuperar es : %s\n",nombreArchivoBinario);
+        }
 */

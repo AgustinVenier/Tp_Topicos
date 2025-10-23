@@ -35,7 +35,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     while(fgets(cad, sizeof(cad), ftexto))
     {
         sscanf(cad,
-                "%ld,\"%[^\"]\",%d/%d/%d,%c,%d/%d/%d,%10[^,],%d/%d/%d,%c,%9[^,],%29s", // Lee archivo de texto separado por comas, y el string de nya dentro de comillas dobles.
+               "%ld,\"%[^\"]\",%d/%d/%d,%c,%d/%d/%d,%10[^,],%d/%d/%d,%c,%9[^,],%29s", // Lee archivo de texto separado por comas, y el string de nya dentro de comillas dobles.
                &miembro->dni,miembro->nya, &miembro->fecha_nac.dia, &miembro->fecha_nac.mes,
                &miembro->fecha_nac.anio, &miembro->sexo, &miembro->fecha_afi.dia, &miembro->fecha_afi.mes,
                &miembro->fecha_afi.anio, miembro->cat, &miembro->fecha_cuota.dia, &miembro->fecha_cuota.mes,
@@ -51,34 +51,35 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
             //cantMiembros++;
         }
 
-        else {
+        else
+        {
             switch (valor)
             {
-                case 1:
+            case 1:
                 strcpy(aux,"\"Error en campo DNI\",");
                 break;
-                case 2:
+            case 2:
                 strcpy(aux,"\"Error en campo F NACIMIENTO\",");
                 break;
-                case 3:
+            case 3:
                 strcpy(aux,"\"Error en campo SEXO\",");
                 break;
-                case 4:
+            case 4:
                 strcpy(aux,"\"Error en campo F AFILIACION\",");
                 break;
-                case 5:
+            case 5:
                 strcpy(aux,"\"Error en campo CATEGORIA\",");
                 break;
-                case 6:
+            case 6:
                 strcpy(aux,"\"Error en campo F ULT COUTA VALIDA\",");
                 break;
-                case 7:
+            case 7:
                 strcpy(aux,"\"Error en campo ESTADO\",");
                 break;
-                case 8:
+            case 8:
                 strcpy(aux,"\"Error en campo PLAN\",");
                 break;
-                case 9:
+            case 9:
                 strcpy(aux,"\"Error en campo MAIL\",");
                 break;
             }
@@ -259,7 +260,7 @@ int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f
 
     if(validarFechaNacimiento(fechaNac,f_proceso,18))
     {
-      if(strcmpi(categ, "MENOR") == 0)
+        if(strcmpi(categ, "MENOR") == 0)
             return EXITO;
         else
             return FALLA;
@@ -339,7 +340,57 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
     return ;
 }
 
+int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const char *subcarpeta_binario,const char *subcarpeta_error,const t_fecha *pf)
+{
 
+
+    char aux_fecha[10], aux_nombre[60];
+
+    if (*nombreArchivoBinario == ' ')
+    {
+        printf("No hay archivos para recuperar, se generaran nuevos.\n");
+
+        strcpy(nombreArchivoBinario,subcarpeta_binario);
+        strcat(nombreArchivoBinario, "/miembros-VC-");
+        sprintf(aux_fecha,"%04d%02d%02d",pf->anio,pf->mes,pf->dia);
+        strcat(nombreArchivoBinario,aux_fecha);
+        strcat(nombreArchivoBinario,".dat");
+
+
+        strcpy(nombreArchivoError,subcarpeta_error);
+        strcat(nombreArchivoError, "/error-VC-");
+        strcat(nombreArchivoError,aux_fecha);
+        strcat(nombreArchivoError,".txt");
+
+        return 1; // Procesar
+    }
+    else
+    {
+
+        strcpy(aux_nombre,subcarpeta_binario);
+        strcat(aux_nombre,"/");
+        strcat(aux_nombre,nombreArchivoBinario);
+        strcpy(nombreArchivoBinario,subcarpeta_binario);
+        strcat(nombreArchivoBinario, "/miembros-VC-");
+        sprintf(aux_fecha,"%04d%02d%02d",pf->anio,pf->mes,pf->dia);
+        strcat(nombreArchivoBinario,aux_fecha);
+        strcat(nombreArchivoBinario,".dat");
+
+        printf("Nombre viejo:%s \n Nombre nuevo: %s\n",aux_nombre,nombreArchivoBinario);
+        if ((rename(aux_nombre,nombreArchivoBinario)) == 0)
+        {
+            printf("Archivo renombrado exitosamente");
+        }
+        else
+        {
+            // Si falla, imprime el error del sistema
+            perror("Error al renombrar el archivo");
+        }
+
+
+        return 0; // Recuperar
+    }
+}
 
 void mostrarMiembros(const char *nombreArch)
 {

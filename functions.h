@@ -6,6 +6,9 @@
 #include <dirent.h>   // Para manejar directorios
 #include "indice.h"
 
+
+
+
 #define EXITO 0
 #define FALLA 1   //este se cambia
 #define BUFFER 250
@@ -55,6 +58,7 @@ int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_f
 
 //Directorios Archivos
 void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo); //devuelve el nombre de  un archivo de esa subcarpeta
+int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const char *subcarpeta_binario,const char *subcarpeta_error,const t_fecha *pf);
 
 void mostrarMiembros(const char *nombreArch);
 
