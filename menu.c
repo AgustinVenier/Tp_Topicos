@@ -6,6 +6,9 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 {
     char op;
     int resultado; // Para guardar el valor devuelto por cada operación
+    do{
+    indice_mostrar(ind);
+    printf("\n");
     op = menu(
              "a. Alta\n"
              "b. Baja\n"
@@ -16,12 +19,10 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
              "g. Salir\n",
              "abcdefg"
              );
-        do
-        {
             switch(op)
             {
                 case 'a':
-                    resultado = Alta(nombreArch,&ind, &fecha);
+                    resultado = Alta(nombreArch,ind, fecha);
                     if (resultado == ERROR)
                         printf("Error al dar de alta el miembro.\n");
                     else
@@ -29,7 +30,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                     break;
 
                 case 'b':
-                    resultado = Baja(nombreArch, &ind);
+                    resultado = Baja(nombreArch, ind);
                     if (resultado == ERROR)
                         printf("Error al dar la baja del miembro.\n");
                     else
@@ -37,7 +38,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                     break;
 
                 case 'c':
-                    resultado = Modificacion(nombreArch, &ind, &fecha);
+                    resultado = Modificacion(nombreArch, ind, fecha);
                     if (resultado == ERROR)
                         printf("Error al modificar el miembro.\n");
                     else
@@ -45,7 +46,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                     break;
 
                 case 'd':
-                    resultado = MostrarInfoMiembro(nombreArch,&ind);
+                    resultado = MostrarInfoMiembro(nombreArch,ind);
                     if (resultado == ERROR)
                         printf("Error al modificar el miembro.\n");
                     else
@@ -53,7 +54,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                     break;
 
                 case 'e':
-                    resultado = ListadoXDNI(nombreArch, &ind);
+                    resultado = ListadoXDNI(nombreArch, ind);
                     if (resultado == ERROR)
                         printf("Error al modificar el miembro.\n");
                     else
@@ -61,7 +62,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                     break;
 
                 case 'f':
-                    resultado = ListadoXPlan(nombreArch, &ind);
+                    resultado = ListadoXPlan(nombreArch, ind);
                     if (resultado == ERROR)
                         printf("Error al modificar el miembro.\n");
                     else
@@ -245,6 +246,7 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 {
     t_miembro m;
     t_reg_indice clave;
+    char aux;
 
     printf("\n=== MODIFICACION DE MIEMBRO ===\n");
     printf("Ingrese DNI a modificar: ");
@@ -272,21 +274,63 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     fread(&m, sizeof(t_miembro), 1, pf);
 
     printf("Modificando a: %s\n", m.nya);
-    // Solicita nuevo email (opcional)
-    printf("Nuevo email (enter para dejar igual): ");
-    char nuevoEmail[100];
-    fflush(stdin);
-    fgets(nuevoEmail, sizeof(nuevoEmail), stdin);
-    eliminarFinDeLinea(nuevoEmail);
 
-    // Solicita nuevo plan (opcional)
-    printf("Nuevo plan (enter para dejar igual): ");
-    char nuevoPlan[30];
+    printf("Desea cambiar el email?(S/N): ");
+    scanf("%c", &aux);
+    if(aux == 'S')
+    {
+        printf("Nuevo email: ");
+        fflush(stdin);
+        fgets(m.email, sizeof(m.email), stdin);
+        eliminarFinDeLinea(m.email);
+    }
     fflush(stdin);
-    fgets(nuevoPlan, sizeof(nuevoPlan), stdin);
-    eliminarFinDeLinea(nuevoPlan);
+    printf("Desea cambiar el nombre y apellido?(S/N): "); ///HAY QUE NORMALIZAR???
+    scanf("%c", &aux);
+    if(aux == 'S')
+    {
+        printf("Nuevo nombre y apellido: ");
+        fflush(stdin);
+        fgets(m.nya, sizeof(m.nya), stdin);
+        eliminarFinDeLinea(m.nya);
+    }
+    fflush(stdin);
+    printf("Desea cambiar el sexo?(S/N): ");///NO SE POR QUE SEXO NO SE MODIFICA
+    scanf("%c", &aux);
+    if(aux == 'S')
+    {
+        printf("Nuevo sexo: ");
+        fflush(stdin);
+        fgets(m.sexo, sizeof(m.sexo), stdin);
+        eliminarFinDeLinea(m.sexo);
+    }
+    fflush(stdin);
 
-    if(validaciones(&m, fecha) != OK)
+    printf("Desea cambiar el categoria?(S/N): ");
+    scanf("%c", &aux);
+    if(aux == 'S')
+    {
+        printf("Nuevo categoria: ");
+        fflush(stdin);
+        fgets(m.cat, sizeof(m.cat), stdin);
+        eliminarFinDeLinea(m.cat);
+    }
+    fflush(stdin);
+    printf("Desea cambiar el plan?(S/N): ");
+    scanf("%c", &aux);
+    if(aux == 'S')
+    {
+        printf("Nuevo plan: ");
+        fflush(stdin);
+        fgets(m.plan, sizeof(m.plan), stdin);
+        eliminarFinDeLinea(m.plan);
+    }
+
+    ///realizar la modificacion de fechas.
+
+
+    fflush(stdin);
+    if(validaciones(&m, fecha) != 0)///CAMBIAR != 0
     {
         fclose(pf);
         return ERROR;

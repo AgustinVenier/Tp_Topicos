@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "indice.h"
+#include "functions.h"
 
 void indice_crear(t_indice *indice, size_t nmemb, size_t tamanyo)
 {
@@ -121,21 +122,44 @@ void indice_vaciar(t_indice *indice)
 int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
                   tamanyo, int (*cmp)(const void *, const void *)) ///no se si esta bien, revisar
 {
-    void* aux
+    void* aux;
+    int pos = 0;
+    t_miembro m;
+    t_reg_indice reg;
+
     FILE *arch = fopen(path, "rb");
     if(!arch)
     {
         return ERROR;
     }
 
-    while(fread(vreg_ind, tamanyo, 1, arch))
+    while(fread(&m, sizeof(t_miembro), 1, arch))
     {
-        indice_insertar(indice,vreg_ind,tamanyo,cmp);
+        reg.dni = m.dni;
+        reg.nro_reg = pos;
+        indice_insertar(indice,&reg,tamanyo,cmp);
+        pos++;
     }
-
-
     fclose(arch);
     return OK;
+}
+
+void indice_mostrar(const t_indice *ind)
+{
+    if (!ind || ind->cantidad_elementos_actual == 0)
+    {
+        printf("\n[ÍNDICE VACÍO]\n");
+        return;
+    }
+
+    printf("\n%-10s | %-10s\n", "NRO_REG", "DNI");
+    printf("----------------------\n");
+
+    for (int i = 0; i < ind->cantidad_elementos_actual; i++)
+    {
+        const t_reg_indice *reg = &ind->vindice[i];
+        printf("%-10u | %-10ld\n", reg->nro_reg, reg->dni);
+    }
 }
 
 

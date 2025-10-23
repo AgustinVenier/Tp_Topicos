@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
             printf("El archivo a recuperar es : %s\n",nombreArchivoBinario);
         }
 
-    mostrarMiembros(nombreArchivoBinario); ///TEST   //Muestro miembros del archivo
+    mostrarMiembros(nombreArchivoBinario); ///MOSTRAR POR MIEMBRO
 
     /// LOGICA PARTE 2 Y MENU
     indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
@@ -67,6 +67,9 @@ int main(int argc, char *argv[])
         return 0;
     }
     menuMiembros(nombreArchivoBinario,&indice, &fechaProceso);
+
+
+
     return 0;
 }
 /*
