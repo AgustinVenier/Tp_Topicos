@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 
 
     LeeSubCarpeta(subcarpeta_binario,nombreArchivoBinario);
-    if(*nombreArchivoBinario==NULL) // si no hay ningun archivo anterior en la subcarpeta
+    if(*nombreArchivoBinario==' ') // si no hay ningun archivo anterior en la subcarpeta
     {
         printf("Se procesara Archivo miembros-VC.txt , no hay archivos para recuperar \n");
         strcpy(nombreArchivoBinario,subcarpeta_binario);

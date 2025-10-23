@@ -122,7 +122,6 @@ void indice_vaciar(t_indice *indice)
 int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
                   tamanyo, int (*cmp)(const void *, const void *)) ///no se si esta bien, revisar
 {
-    void* aux;
     int pos = 0;
     t_miembro m;
     t_reg_indice reg;
@@ -137,7 +136,10 @@ int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
     {
         reg.dni = m.dni;
         reg.nro_reg = pos;
-        indice_insertar(indice,&reg,tamanyo,cmp);
+        if(toupper(m.estado)!='B') // valida no insertar al indice los dados de baja
+        {
+            indice_insertar(indice,&reg,tamanyo,cmp);
+        }
         pos++;
     }
     fclose(arch);
@@ -152,7 +154,7 @@ int cmp_por_dni(const void *a, const void *b)
     return (r1->dni - r2->dni);
 }
 
-int busquedaBinaria(void *vec, void *buscado, unsigned cantelem, size_t tamanyo, int(*cmp)(const void *, const void*))
+int busquedaBinaria(const void *vec, const void *buscado, unsigned cantelem, size_t tamanyo, int(*cmp)(const void *, const void*))
 {
     int i = 0, f = cantelem - 1, medio, res;
 

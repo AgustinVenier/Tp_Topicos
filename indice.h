@@ -20,6 +20,8 @@ typedef struct
     unsigned cantidad_elementos_maxima;
 }t_indice;
 
+void mostrarIndice(t_indice *ind); /// BORRAR PAR ENTREGAR SOLO ES TEST
+
 void indice_crear(t_indice *indice, size_t nmemb, size_t tamanyo);
 
 void indice_redimensionar(t_indice *indice, size_t nmemb, size_t tamanyo);
@@ -50,7 +52,7 @@ void indice_mostrar(const t_indice *ind);
 
 //eliminar si no se utilizan
 
-int busquedaBinaria(void *vec, void *buscado, unsigned cantelem, size_t tamanyo, int(*cmp)(const void *, const void*));
+int busquedaBinaria(const void *vec,const void *buscado, unsigned cantelem, size_t tamanyo, int(*cmp)(const void *, const void*));
 
 void ordenamientoBurbujeo(void *vec, unsigned nmemb, size_t tamanyo, int (*cmp)(const void *, const void *));
 

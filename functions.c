@@ -102,7 +102,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 
 int validaciones(t_miembro * miembro,const t_fecha* f_proceso )
 {
-    normalizar(miembro->nya);
+    normalizar(miembro->nya); /// REVISAR AL LLAMAR NORMALIZA 2 VECES
 
     if (!dniValido(miembro->dni))
         return 1; //error en DNI
@@ -319,7 +319,7 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
     if (!d)
     {
         perror("opendir() error");
-        *nombreArchivo=NULL;
+        *nombreArchivo=' ';
         return ; // La subcarpeta no existe o no se puede leer
     }
 
@@ -332,7 +332,7 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
 
         }
         else
-            *nombreArchivo='\0';
+            *nombreArchivo=' ';
     }
 
     closedir(d); // Cerramos el directorio
@@ -353,19 +353,19 @@ void mostrarMiembros(const char *nombreArch)
         return;
     }
 
-    printf("\n--- Miembros procesados ---\n");
+    printf("\n--- Miembros en el archivo.dat ---\n");
     while (fread(&miembro, sizeof(t_miembro), 1, pf) == 1)
     {
-        printf("DNI: %ld\n", miembro.dni);
-        printf("Nombre y Apellido: %s\n", miembro.nya);
-        printf("Fecha de Nacimiento: %02d/%02d/%04d\n", miembro.fecha_nac.dia, miembro.fecha_nac.mes, miembro.fecha_nac.anio);
-        printf("Sexo: %c\n", miembro.sexo);
-        printf("Fecha de Afiliación: %02d/%02d/%04d\n", miembro.fecha_afi.dia, miembro.fecha_afi.mes, miembro.fecha_afi.anio);
-        printf("Categoría: %s\n", miembro.cat);
+        printf("DNI: %ld  ", miembro.dni);
+        printf("  Nombre y Apellido: %s", miembro.nya);
+        printf("  Fecha de Nacimiento: %02d/%02d/%04d", miembro.fecha_nac.dia, miembro.fecha_nac.mes, miembro.fecha_nac.anio);
+        printf("  Sexo: %c", miembro.sexo);
+        printf("  Fecha de Afiliación: %02d/%02d/%04d", miembro.fecha_afi.dia, miembro.fecha_afi.mes, miembro.fecha_afi.anio);
+        printf("  Categoría: %s\n", miembro.cat);
         printf("Fecha de última Cuota: %02d/%02d/%04d\n", miembro.fecha_cuota.dia, miembro.fecha_cuota.mes, miembro.fecha_cuota.anio);
-        printf("Estado: %c\n", miembro.estado);
-        printf("Plan: %s\n", miembro.plan);
-        printf("Email: %s\n", miembro.email);
+        printf("  Estado: %c", miembro.estado);
+        printf("  Plan: %s", miembro.plan);
+        printf("  Email: %s\n", miembro.email);
         printf("-------------------------------\n");
     }
     fclose(pf);

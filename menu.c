@@ -2,11 +2,25 @@
 #include "indice.h"
 #include <stdlib.h>
 
+void mostrarIndice(t_indice *indice) /// BORRAR PAR ENTREGAR SOLO ES TEST
+{
+    int i;
+    t_reg_indice *registros = (t_reg_indice *)indice->vindice;
+    printf("---------INDICE--------\n");
+    for (i=0;i< indice->cantidad_elementos_actual;i++)
+    {
+        printf(" DNI: %ld , REG: %d \n",registros[i].dni,registros[i].nro_reg);
+    }
+    return;
+}
+
+
 void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 {
     char op;
     int resultado; // Para guardar el valor devuelto por cada operación
     do{
+    mostrarIndice(ind); /// BORRAR PAR ENTREGAR SOLO ES TEST
     printf("\n");
     op = menu(
              "a. Alta\n"
@@ -47,25 +61,25 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 case 'd':
                     resultado = MostrarInfoMiembro(nombreArch,ind);
                     if (resultado == ERROR)
-                        printf("Error al modificar el miembro.\n");
+                        printf("Error al mostrar\n");
                     else
-                        printf("Modificacion realizada con exito.\n");
+                        printf("Realizada con exito.\n");
                     break;
 
                 case 'e':
                     resultado = ListadoXDNI(nombreArch, ind);
                     if (resultado == ERROR)
-                        printf("Error al modificar el miembro.\n");
+                        printf("Error al listar\n");
                     else
-                        printf("Modificacion realizada con exito.\n");
+                        printf("Realizada con exito.\n");
                     break;
 
                 case 'f':
                     resultado = ListadoXPlan(nombreArch, ind);
                     if (resultado == ERROR)
-                        printf("Error al modificar el miembro.\n");
+                        printf("Error al Listar\n");
                     else
-                        printf("Modificacion realizada con exito.\n");
+                        printf("Realizada con exito.\n");
                     break;
             }
         }while(op != 'g');
@@ -166,7 +180,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 
     // Valido los campos del miembro
     normalizar(m.nya);
-    if (validaciones(&m, fecha) != EXITO)
+    if ( toupper(m.estado)=='B' || validaciones(&m, fecha) != EXITO)
     {
         printf("Registro inválido según validaciones. Alta cancelada.\n");
         fclose(pf);
@@ -192,7 +206,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 
 int Baja(const char *nombreArch, t_indice *ind)
 {
-    long dni;
+    //long dni;
     int pos;
     t_miembro m;
     t_reg_indice clave; //Estructura auxiliar para verificar
@@ -205,7 +219,7 @@ int Baja(const char *nombreArch, t_indice *ind)
     pos = indice_buscar(ind, &clave, ind->cantidad_elementos_actual, sizeof(t_reg_indice), cmp_por_dni);
     if (pos == -1)
     {
-        printf("No existe miembro con DNI %ld\n", dni);
+        printf("No existe miembro con DNI %ld\n", clave.dni);
         return ERROR;
     }
     // Accede al vector de índices para obtener el número de registro físico
@@ -222,7 +236,7 @@ int Baja(const char *nombreArch, t_indice *ind)
     fseek(pf, nro_reg * sizeof(t_miembro), SEEK_SET);
     fread(&m, sizeof(t_miembro), 1, pf);
 
-    if (m.estado == 'B')
+    if (m.estado == 'B') /// esto no deberia pasar xq si esta dado de baja no esta en el vector indice
     {
         printf("El registro ya está dado de baja.\n");
         fclose(pf);
@@ -356,8 +370,8 @@ int MostrarInfoMiembro(const char *nombreArch, t_indice *ind)
     t_miembro m;
     t_reg_indice clave;
 
-    printf("\n=== MODIFICACION DE MIEMBRO ===\n");
-    printf("Ingrese DNI a modificar: ");
+    printf("\n=== INFORMACION DE MIEMBRO ===\n");
+    printf("Ingrese DNI a visualizar: ");
     scanf("%ld", &m.dni);
     getchar();
     clave.dni = m.dni;
@@ -435,7 +449,6 @@ int ListadoXDNI(const char *nombreArch, t_indice *ind)
 int ListadoXPlan(const char *nombreArch, t_indice *ind)
 {
     int i, n;
-    char planActual[10];
     char planes[4][10]={"Basic","Premium","Vip","Family"};
     t_miembro aux;
     FILE *pf = fopen(nombreArch, "rb");
@@ -457,7 +470,7 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
 
 
     for(i=0;i<4;i++){
-        printf("------Plan %s------\n",(planes+i));
+        printf("------Plan %s------\n",(planes[i]));
         for(n=0;n<ind->cantidad_elementos_actual;n++){
             fseek(pf,sizeof(t_miembro)*((vecInd+n)->nro_reg),0);
             fread(&aux,sizeof(t_miembro),1,pf);
