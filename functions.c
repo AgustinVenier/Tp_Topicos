@@ -18,17 +18,17 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     if (ftexto ==NULL)
     {
         printf("Error al abrir un archivo texto");
-        return CHAU;
+        return FALLA;
     }
     if (ferror ==NULL)
     {
         printf("Error al abrir un archivo error");
-        return CHAU;
+        return FALLA;
     }
     if (fbin ==NULL)
     {
         printf("Error al abrir un archivo binario");
-        return CHAU;
+        return FALLA;
     }
 
 
@@ -41,7 +41,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
                &miembro->fecha_afi.anio, miembro->cat, &miembro->fecha_cuota.dia, &miembro->fecha_cuota.mes,
                &miembro->fecha_cuota.anio, &miembro->estado, miembro->plan, miembro->email
               );
-
+        normalizar(miembro->nya);
         valor = validaciones(miembro,f_proceso);
 
         if(valor == EXITO)
@@ -51,9 +51,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
             //cantMiembros++;
         }
 
-        else 
-		if(valor == CHAU)
-        {
+        else {
             switch (valor)
             {
                 case 1:
@@ -107,15 +105,13 @@ int validaciones(const t_miembro * miembro,const t_fecha* f_proceso )
     if (!dniValido(miembro->dni))
         return 1; //error en DNI
 
-    normalizar(miembro->nya);
-
     if (fNacValido(&miembro->fecha_nac,f_proceso))
         return 2; //error FNAC
 
     if (!sexValido(miembro->sexo))
         return 3; //error SEXO
 
-    if (fAfiliacionValido(&miembro->fecha_afi,f_proceso,&miembro->fecha_nac)==CHAU)
+    if (fAfiliacionValido(&miembro->fecha_afi,f_proceso,&miembro->fecha_nac)==FALLA)
         return 4; // error F AFILIACION
 
     if (validarFechaCategoria(miembro->cat,&miembro->fecha_nac,f_proceso))
@@ -160,7 +156,7 @@ int validarFecha(const t_fecha* f) // retorna 0 valido, 1 invalido
 
     if (f->mes < 1 || f->mes > 12) // Validar mes
     {
-        return CHAU;
+        return FALLA;
     }
 
     // Calcular d�as del mes
@@ -181,12 +177,12 @@ int validarFecha(const t_fecha* f) // retorna 0 valido, 1 invalido
 
     if (f->dia < 1 || f->dia > diasEnMes) // Validar d�a
     {
-        return CHAU;
+        return FALLA;
     }
 
     if (f->anio < 1) // Validar año
     {
-        return CHAU;
+        return FALLA;
     }
     return EXITO;
 }
@@ -243,7 +239,7 @@ int validarEmail(char *cad)
 {
     char* pc=cad;
     if(strcmp(pc,"")==0)
-        return CHAU;
+        return FALLA;
     pc=strchr(pc,'@');
 
     if(pc!=NULL && isalnum(*(pc-1)) && isalpha(*(pc+1)))  /// el de adelante del @ alphanum? o solo letra?
@@ -252,7 +248,7 @@ int validarEmail(char *cad)
         if(pc!=NULL && isalpha(*(pc-1)) && isalpha(*(pc+1)))  /// el de adelante y atras del . alphanum? o solo letra?
             return EXITO;
     }
-    return CHAU;
+    return FALLA;
 }
 
 
@@ -264,36 +260,36 @@ int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f
       if(strcmpi(categ, "MENOR") == 0)
             return EXITO;
         else
-            return CHAU;
+            return FALLA;
     }
     if(strcmpi(categ, "ADULTO") == 0)
         return EXITO;
-    return CHAU;
+    return FALLA;
 }
 
 
 
 int fNacValido(const t_fecha* fechaNac,const t_fecha * f_proceso)
 {
-    if (validarFecha(fechaNac) == CHAU)
-        return CHAU;
+    if (validarFecha(fechaNac) == FALLA)
+        return FALLA;
 
-    if (validarFechaNacimiento(fechaNac,f_proceso,10) == CHAU) //pasaron 10 o mas anios
-        return CHAU;
+    if (validarFechaNacimiento(fechaNac,f_proceso,10) == FALLA) //pasaron 10 o mas anios
+        return FALLA;
 
     return EXITO;
 }
 
 int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t_fecha* fechaNac)
 {
-    if (validarFecha(fechaAfi) == CHAU)
-        return CHAU;
+    if (validarFecha(fechaAfi) == FALLA)
+        return FALLA;
 
     if (compararFecha(fechaAfi, fechaProc) > 0) // afiliación > proceso // creo que el problema esta en esta linea
-        return CHAU;
+        return FALLA;
 
     if (compararFecha(fechaAfi, fechaNac) <= 0) // afiliación <= nacimiento
-        return CHAU;
+        return FALLA;
 
     return EXITO;
 }
@@ -301,10 +297,10 @@ int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t
 int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc)
 {
     if (compararFecha(fechaCuota, fechaAfi) <= 0) // cuota <= afiliación
-        return CHAU;
+        return FALLA;
 
     if (compararFecha(fechaCuota, fechaProc) > 0) // cuota > proceso
-        return CHAU;
+        return FALLA;
 
     return EXITO;
 }

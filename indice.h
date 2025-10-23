@@ -48,7 +48,7 @@ tamanyo, int (*cmp)(const void *, const void *));
 
 //eliminar si no se utilizan
 
-int busquedaBinaria(void *vec, void *buscado, unsigned *cantelem, size_t tamanyo, int(*cmp)(const void *, const void*));
+int busquedaBinaria(void *vec, void *buscado, unsigned cantelem, size_t tamanyo, int(*cmp)(const void *, const void*));
 
 void ordenamientoBurbujeo(void *vec, unsigned nmemb, size_t tamanyo, int (*cmp)(const void *, const void *));
 

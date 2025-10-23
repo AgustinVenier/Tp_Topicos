@@ -3,12 +3,11 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#include <time.h> // se usa???
 #include <dirent.h>   // Para manejar directorios
 #include "indice.h"
 
 #define EXITO 0
-#define CHAU 1   //este se cambia
+#define FALLA 1   //este se cambia
 #define BUFFER 250
 #define FORMATO_FECHA "%d/%d/%d"
 #define dniValido(a) (1000000<(a)&&(a)<100000000)
@@ -16,11 +15,6 @@
 #define estadoValido(a) (toupper(a)=='A'||toupper(a)=='B')
 #define planValido(a) ((strcmpi((a),"BASIC")==0)||(strcmpi((a),"PREMIUM")==0)||(strcmpi((a),"VIP")==0)||(strcmpi((a),"FAMILY")==0)) // no es sensible mayus/minus
 
-///#define fNacValido(a) ((ValidarFecha(a))&&(ValidarFechaNacimiento(a))) // a &fecha nac
-///#define fAfiliacionValido(a,b,c) ((ValidarFecha(a))&&(compararFecha((a),(b))<=0)&&(compararFecha((a),(c))>0))// a fecha afiliacion , b fecha proceso, c fecha nacimiento
-///#define fUltCoutaValid(a,b,c) ((compararFecha((a),(b))>0)&&(compararFecha((a),(c))<=0))//a fecha ult couta b fecha afiliacion , c fecha proceso
-
-///fUltCoutaValid(a,b,c) ((ValidarFecha(a))&&(compararFecha((a),(b))>0)&&(compararFecha((a),(c))<=0))  ?????
 
 typedef struct
 {

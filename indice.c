@@ -30,6 +30,7 @@ void indice_redimensionar(t_indice *indice, size_t nmemb, size_t tamanyo)
 int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
                      int (*cmp)(const void *, const void *))
 {
+    char *base = (char*)indice->vindice;
     // Buscar si ya existe
     if(indice_buscar(indice,registro,indice->cantidad_elementos_actual,tamanyo,cmp)!=NO_EXISTE)
     {
@@ -40,10 +41,25 @@ int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
     {
         indice_redimensionar(indice,indice->cantidad_elementos_actual,tamanyo);
     }
-    char *base = (char*)indice->vindice;
-    memcpy(base + indice->cantidad_elementos_actual * tamanyo, registro, tamanyo);
 
-    indice->cantidad_elementos_actual++;
+
+
+
+//    int i = indice->cantidad_elementos_actual - 1;
+//    while (i >= 0 && cmp(base + i * tamanyo, registro) > 0)
+//    {
+//        // Desplazar a la derecha
+//        memcpy(base + (i + 1) * tamanyo, base + i * tamanyo, tamanyo);
+//        i--;
+//    }
+//
+//
+//    memcpy(base + (i + 1) * tamanyo, registro, tamanyo);
+
+    memcpy(base + indice->cantidad_elementos_actual * tamanyo, registro, tamanyo);
+    indice->cantidad_elementos_actual+=1;
+
+    qsort(indice->vindice,indice->cantidad_elementos_actual,tamanyo,cmp);
 
     return OK;
 }
@@ -105,6 +121,7 @@ void indice_vaciar(t_indice *indice)
 int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
                   tamanyo, int (*cmp)(const void *, const void *)) ///no se si esta bien, revisar
 {
+    void* aux
     FILE *arch = fopen(path, "rb");
     if(!arch)
     {
@@ -115,6 +132,7 @@ int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
     {
         indice_insertar(indice,vreg_ind,tamanyo,cmp);
     }
+
 
     fclose(arch);
     return OK;
@@ -130,9 +148,9 @@ int cmp_por_dni(const void *a, const void *b)
     return (r1->dni - r2->dni);
 }
 
-int busquedaBinaria(void *vec, void *buscado, unsigned *cantelem, size_t tamanyo, int(*cmp)(const void *, const void*))
+int busquedaBinaria(void *vec, void *buscado, unsigned cantelem, size_t tamanyo, int(*cmp)(const void *, const void*))
 {
-    int i = 0, f = (*cantelem) - 1, medio, res;
+    int i = 0, f = cantelem - 1, medio, res;
 
     while(i <= f)
     {

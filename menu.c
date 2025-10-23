@@ -94,35 +94,6 @@ char menu(const char *msj, const char *opc)
     return opta;
 }
 
-int validaciones(const t_miembro *m, const t_fecha *fecha)
-{
-    if (m->dni <= 0)
-    {
-        printf("Error: DNI inválido (%ld)\n", m->dni);
-        return ERROR;
-    }
-
-    if (strlen(m->nya) == 0)
-    {
-        printf("Error: nombre o apellido vacío.\n");
-        return ERROR;
-    }
-
-    if (strlen(m->cat) == 0)
-    {
-        printf("Error: categoría no especificada.\n");
-        return ERROR;
-    }
-
-    if (fecha->anio < 2000 || fecha->anio > 2100)
-    {
-        printf("Error: fecha fuera de rango.\n");
-        return ERROR;
-    }
-    return OK;
-}
-
-
 int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 {
     t_miembro m;    //nuevo registro completo que se va a dar de alta
@@ -151,7 +122,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 
     // Valido si ya existe en el índice
     pos = indice_buscar(ind, &reg, ind->cantidad_elementos_actual, sizeof(t_reg_indice), cmp_por_dni);
-    if (pos != -1)
+    if (pos != NO_EXISTE)
     {
         printf("Error: ya existe un miembro con DNI %ld.\n", m.dni);
         fclose(pf);
@@ -194,7 +165,8 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     eliminarFinDeLinea(m.email);
 
     // Valido los campos del miembro
-    if (validaciones(&m, fecha) != OK)
+    normalizar(m.nya);
+    if (validaciones(&m, fecha) != EXITO)
     {
         printf("Registro inválido según validaciones. Alta cancelada.\n");
         fclose(pf);
@@ -254,7 +226,7 @@ int Baja(const char *nombreArch, t_indice *ind)
     {
         printf("El registro ya está dado de baja.\n");
         fclose(pf);
-        indice_eliminar(ind, clave, sizeof(t_reg_indice), cmp_por_dni);
+        indice_eliminar(ind, &clave, sizeof(t_reg_indice), cmp_por_dni);
         return OK;
     }
 
@@ -263,7 +235,7 @@ int Baja(const char *nombreArch, t_indice *ind)
     fwrite(&m, sizeof(t_miembro), 1, pf);
     fflush(pf);
 
-    indice_eliminar(ind, clave, sizeof(t_reg_indice), cmp_por_dni);
+    indice_eliminar(ind, &clave, sizeof(t_reg_indice), cmp_por_dni);
     fclose(pf);
     return OK;
 }
@@ -410,9 +382,10 @@ int ListadoXDNI(const char *nombreArch, t_indice *ind)
 
 int ListadoXPlan(const char *nombreArch, t_indice *ind)
 {
-    int i, n = 0;
-    char planActual[10] = "";
-
+    int i, n;
+    char planActual[10];
+    char planes[4][10]={"Basic","Premium","Vip","Family"};
+    t_miembro aux;
     FILE *pf = fopen(nombreArch, "rb");
     if (!pf)
     {
@@ -429,47 +402,29 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
 
     t_reg_indice *vecInd = (t_reg_indice *)ind->vindice;    // Casteo el vector del índice al tipo correcto
 
-    // Reservo memoria para los miembros activos
-    t_miembro *vec = malloc(ind->cantidad_elementos_actual * sizeof(t_miembro));
-    if (!vec)
-    {
-        printf("\nError al reservar memoria.\n");
-        fclose(pf);
-        return ERROR;
-    }
 
-    for (i = 0; i < ind->cantidad_elementos_actual; i++)
-    {
-        t_miembro aux;
-        fseek(pf, vecInd[i].nro_reg * sizeof(t_miembro), SEEK_SET);
-        fread(&aux, sizeof(t_miembro), 1, pf);
 
-        if (aux.estado == 'A')
-            vec[n++] = aux;
-    }
-
-    if (n == 0)
-    {
-        printf("\nNo hay miembros activos para listar.\n");
-        free(vec);     // Libero memoria
-        fclose(pf);
-        return OK;
-    }
-
-    qsort(vec, n, sizeof(t_miembro), cmp_por_dni);   // Ordena por plan y luego por DNI
-
-    printf("\n=== LISTADO POR PLAN ===\n");
-    for (i = 0; i < n; i++)
-    {
-        if (strcasecmp(planActual, vec[i].plan) != 0)
-        {
-            strcpy(planActual, vec[i].plan);
-            printf("\n--- PLAN: %s ---\n", planActual);
+    for(i=0;i<4;i++){
+        for(n=0;n<ind->cantidad_elementos_actual;n++){
+            fseek(pf,sizeof(t_miembro)*((vecInd+n)->nro_reg),0);
+            fread(&aux,sizeof(t_miembro),1,pf);
+            if(strcmpi(*(planes+i),aux.plan)==0 && toupper(aux.estado)=='A'){
+                printf("------ESTADO %c------\n",aux.estado);
+                printf("DNI: %ld\n", aux.dni);
+                printf("Nombre y Apellido: %s\n", aux.nya);
+                printf("Fecha de Nacimiento: %02d/%02d/%04d\n", aux.fecha_nac.dia, aux.fecha_nac.mes, aux.fecha_nac.anio);
+                printf("Sexo: %c\n", aux.sexo);
+                printf("Fecha de Afiliación: %02d/%02d/%04d\n", aux.fecha_afi.dia, aux.fecha_afi.mes, aux.fecha_afi.anio);
+                printf("Categoría: %s\n", aux.cat);
+                printf("Fecha de última Cuota: %02d/%02d/%04d\n", aux.fecha_cuota.dia, aux.fecha_cuota.mes, aux.fecha_cuota.anio);
+                printf("Estado: %c\n", aux.estado);
+                printf("Plan: %s\n", aux.plan);
+                printf("Email: %s\n", aux.email);
+                printf("-------------------------------\n");
+            }
         }
-        printf("%ld - %-30s - Email: %s\n", vec[i].dni, vec[i].nya, vec[i].email);
     }
 
-    free(vec);
     fclose(pf);
     return OK;
 }

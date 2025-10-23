@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
     valorFechaProc = validarFecha(pf);   // pf es puntero válido
 
-    while (valorFechaProc == ERROR)
+    while (valorFechaProc == FALLA)
         {
                 printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
                 fflush(stdin);
@@ -58,9 +58,14 @@ int main(int argc, char *argv[])
             strcpy(nombreArchivoBinario,aux);
             printf("El archivo a recuperar es : %s\n",nombreArchivoBinario);
         }
-    mostrarMiembros(nombreArchivoBinario);    //Muestro miembros del archivo
+
+    mostrarMiembros(nombreArchivoBinario); ///TEST   //Muestro miembros del archivo
 
     /// LOGICA PARTE 2 Y MENU
+    indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
+    if(indice_cargar(nombreArchivoBinario,&indice,indice.vindice,sizeof(t_reg_indice),cmp_por_dni)==ERROR){
+        return 0;
+    }
     menuMiembros(nombreArchivoBinario,&indice, &fechaProceso);
     return 0;
 }
