@@ -39,7 +39,7 @@ typedef struct
 int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso);
 
 //Validacion General
-int validaciones(const t_miembro *, const t_fecha* f_proceso);
+int validaciones(t_miembro *, const t_fecha* f_proceso);
 
 //Validaciones Campos
 
@@ -61,6 +61,7 @@ void mostrarMiembros(const char *nombreArch);
 //Parte 2
 void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
 char menu(const char *msj, const char *opc);
+void preguntarCambio(const char * cad, char* aux);
 void eliminarFinDeLinea(char *cad);
 int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
 int Baja(const char *nombreArch, t_indice *ind);

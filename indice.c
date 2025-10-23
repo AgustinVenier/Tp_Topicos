@@ -144,26 +144,6 @@ int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
     return OK;
 }
 
-void indice_mostrar(const t_indice *ind)
-{
-    if (!ind || ind->cantidad_elementos_actual == 0)
-    {
-        printf("\n[ÍNDICE VACÍO]\n");
-        return;
-    }
-
-    printf("\n%-10s | %-10s\n", "NRO_REG", "DNI");
-    printf("----------------------\n");
-
-    for (int i = 0; i < ind->cantidad_elementos_actual; i++)
-    {
-        const t_reg_indice *reg = &ind->vindice[i];
-        printf("%-10u | %-10ld\n", reg->nro_reg, reg->dni);
-    }
-}
-
-
-
 int cmp_por_dni(const void *a, const void *b)
 {
     const t_reg_indice *r1 = (const t_reg_indice *)a;

@@ -7,7 +7,6 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     char op;
     int resultado; // Para guardar el valor devuelto por cada operación
     do{
-    indice_mostrar(ind);
     printf("\n");
     op = menu(
              "a. Alta\n"
@@ -275,61 +274,70 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 
     printf("Modificando a: %s\n", m.nya);
 
-    printf("Desea cambiar el email?(S/N): ");
-    scanf("%c", &aux);
-    if(aux == 'S')
+    preguntarCambio("email", &aux);
+    if(toupper(aux) == 'S')
     {
         printf("Nuevo email: ");
-        fflush(stdin);
         fgets(m.email, sizeof(m.email), stdin);
         eliminarFinDeLinea(m.email);
     }
-    fflush(stdin);
-    printf("Desea cambiar el nombre y apellido?(S/N): "); ///HAY QUE NORMALIZAR???
-    scanf("%c", &aux);
-    if(aux == 'S')
+
+    preguntarCambio("apellido y nombre", &aux);
+    if(toupper(aux) == 'S')
     {
-        printf("Nuevo nombre y apellido: ");
-        fflush(stdin);
+        printf("Nuevo apellido y nombre: ");
         fgets(m.nya, sizeof(m.nya), stdin);
         eliminarFinDeLinea(m.nya);
     }
-    fflush(stdin);
-    printf("Desea cambiar el sexo?(S/N): ");///NO SE POR QUE SEXO NO SE MODIFICA
-    scanf("%c", &aux);
-    if(aux == 'S')
+
+    preguntarCambio("sexo", &aux);
+    if(toupper(aux) == 'S')
     {
         printf("Nuevo sexo: ");
+        scanf("%c", &m.sexo);
         fflush(stdin);
-        fgets(m.sexo, sizeof(m.sexo), stdin);
-        eliminarFinDeLinea(m.sexo);
     }
-    fflush(stdin);
 
-    printf("Desea cambiar el categoria?(S/N): ");
-    scanf("%c", &aux);
-    if(aux == 'S')
+    preguntarCambio("categoria", &aux);
+    if(toupper(aux) == 'S')
     {
         printf("Nuevo categoria: ");
-        fflush(stdin);
         fgets(m.cat, sizeof(m.cat), stdin);
         eliminarFinDeLinea(m.cat);
     }
-    fflush(stdin);
-    printf("Desea cambiar el plan?(S/N): ");
-    scanf("%c", &aux);
-    if(aux == 'S')
+
+    preguntarCambio("plan", &aux);
+    if(toupper(aux) == 'S')
     {
         printf("Nuevo plan: ");
-        fflush(stdin);
         fgets(m.plan, sizeof(m.plan), stdin);
         eliminarFinDeLinea(m.plan);
     }
 
-    ///realizar la modificacion de fechas.
+    preguntarCambio("fecha de nacimiento", &aux);
+    if(toupper(aux) == 'S')
+    {
+        printf("Nueva Fecha de Nacimiento(DD/MM/AAAA): ");
+        scanf("%d/%d/%d", &m.fecha_nac.dia, &m.fecha_nac.mes, &m.fecha_nac.anio);
+        fflush(stdin);
+    }
 
+    preguntarCambio("fecha de afiliacion(DD/MM/AAAA): ", &aux);
+    if(toupper(aux) == 'S')
+    {
+        printf("Nueva Fecha de afiliación: ");
+        scanf("%d/%d/%d", &m.fecha_afi.dia, &m.fecha_afi.mes, &m.fecha_afi.anio);
+        fflush(stdin);
+    }
 
-    fflush(stdin);
+    preguntarCambio("fecha de ultima cuota(DD/MM/AAAA): ", &aux);
+    if(toupper(aux) == 'S')
+    {
+        printf("Nueva Fecha de ultima cuota: ");
+        scanf("%d/%d/%d", &m.fecha_cuota.dia, &m.fecha_cuota.mes, &m.fecha_cuota.anio);
+        fflush(stdin);
+    }
+
     if(validaciones(&m, fecha) != 0)///CAMBIAR != 0
     {
         fclose(pf);
@@ -471,4 +479,17 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
 
     fclose(pf);
     return OK;
+}
+
+void preguntarCambio(const char * cad, char* aux){
+    printf("Desea cambiar %s (S/N): ", cad);
+    do{
+
+        scanf("%c", aux);
+        fflush(stdin);
+        if(toupper(*aux)!='S' && toupper(*aux)!='N')
+        {
+            printf("Opcion invalida, ingrese de nuevo: ");
+        }
+    }while(toupper(*aux)!='S' && toupper(*aux)!='N');
 }

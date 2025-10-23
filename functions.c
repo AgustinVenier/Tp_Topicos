@@ -100,8 +100,10 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 //--------------------------------------------------------------------------------------
 ///Validacion General
 
-int validaciones(const t_miembro * miembro,const t_fecha* f_proceso )
+int validaciones(t_miembro * miembro,const t_fecha* f_proceso )
 {
+    normalizar(miembro->nya);
+
     if (!dniValido(miembro->dni))
         return 1; //error en DNI
 
