@@ -37,7 +37,7 @@ typedef struct
 } t_miembro;
 
 //Procesar Archivo
-int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso);
+int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso,t_indice * indice,int (*cmp)(const void *, const void *));
 
 //Validacion General
 int validaciones(t_miembro *, const t_fecha* f_proceso);

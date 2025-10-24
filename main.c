@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 {
     int procesamiento,valorFechaProc;
     char nombreArchivoBinario[60],nombreArchivoError[60];
+    int flagProcesar;
 
     t_fecha fechaProceso;
     t_fecha *pf = &fechaProceso;
@@ -26,13 +27,18 @@ int main(int argc, char *argv[])
     }
 
     LeeSubCarpeta(subcarpeta_binario,nombreArchivoBinario);
-    if(crearNombreArchivo(nombreArchivoBinario,nombreArchivoError,subcarpeta_binario,subcarpeta_error,pf))
+    indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
+    flagProcesar=crearNombreArchivo(nombreArchivoBinario,nombreArchivoError,subcarpeta_binario,subcarpeta_error,pf);
+    if(flagProcesar==FALLA)
     {
-        procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,pf);
+        procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,pf,&indice,cmp_por_dni);
         if (procesamiento==EXITO)
             printf("Procesamiento exitoso\n");
-        else
+        else{
             printf("Error en el procesamiento\n");
+            return 0;
+        }
+
 
     }
     printf("Nombre archivo binario:%s",nombreArchivoBinario);
@@ -40,13 +46,16 @@ int main(int argc, char *argv[])
     mostrarMiembros(nombreArchivoBinario); //Solo para testear
 
     /// LOGICA PARTE 2 Y MENU
-    indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
-    if(indice_cargar(nombreArchivoBinario,&indice,indice.vindice,sizeof(t_reg_indice),cmp_por_dni)==ERROR)
-    {
-        return 0;
+    if(flagProcesar!=FALLA){
+      if(indice_cargar(nombreArchivoBinario,&indice,indice.vindice,sizeof(t_reg_indice),cmp_por_dni)==ERROR)
+        {
+            return 0;
+        }
     }
+
     menuMiembros(nombreArchivoBinario,&indice, &fechaProceso);
 
+    indice_vaciar(&indice);
     return 0;
 }
 /*

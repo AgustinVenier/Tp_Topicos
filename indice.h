@@ -3,8 +3,8 @@
 
 #define CANT_ELEMENTOS 100
 #define INCREMENTO 1.3
-#define OK 1
-#define ERROR 0
+#define OK 0
+#define ERROR 1
 #define NO_EXISTE -1
 
 typedef struct

@@ -1,11 +1,14 @@
 #include "functions.h"
 //Procesar archivo
-int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso)
+int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso,t_indice * indice,int (*cmp)(const void *, const void *))
 {
     char cad[BUFFER],aux[BUFFER];
     t_miembro m1;
     t_miembro *miembro = &m1;
     int valor;
+    int seInserta;
+    int contador=0;
+    t_reg_indice auxReg;
     FILE* ftexto = fopen(nombreArchivoTexto, "rt");
     FILE* ferror = fopen(nombreArchivoError, "wt");
     FILE* fbin = fopen(nombreArchivoBin, "wb");
@@ -36,16 +39,30 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
                &miembro->fecha_afi.anio, miembro->cat, &miembro->fecha_cuota.dia, &miembro->fecha_cuota.mes,
                &miembro->fecha_cuota.anio, &miembro->estado, miembro->plan, miembro->email
               );
-        normalizar(miembro->nya);
         valor = validaciones(miembro,f_proceso);
+
+        auxReg.dni=miembro->dni;
+        auxReg.nro_reg=contador;
 
         if(valor == EXITO)
         {
-            fwrite(miembro, sizeof(t_miembro), 1, fbin); ///revisar
+            if(toupper(miembro->estado)=='A'){
+                seInserta=indice_insertar(indice,&auxReg,sizeof(t_reg_indice),cmp);
+            }else{
+                seInserta=-1;
+            }
+
+            if(seInserta==OK){
+                contador++;
+                fwrite(miembro, sizeof(t_miembro), 1, fbin); ///revisar
+            }else if(seInserta==-1){
+                fwrite(miembro, sizeof(t_miembro), 1, fbin);
+            }else{
+                valor=10;
+            }
         }
 
-        else
-        {
+        if(valor != EXITO){
             switch (valor)
             {
             case 1:
@@ -74,6 +91,9 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
                 break;
             case 9:
                 strcpy(aux,"\"Error en campo MAIL\",");
+                break;
+            case 10:
+                strcpy(aux,"\"Error DNI DUPLICADO\",");
                 break;
             }
 

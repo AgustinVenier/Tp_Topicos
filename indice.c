@@ -60,7 +60,7 @@ int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
 
 int indice_eliminar(t_indice *indice, const void *registro, size_t tamanyo, int (*cmp)(const void *, const void *))
 {
-    if (!indice || !indice->vindice || indice->cantidad_elementos_actual == ERROR)
+    if (!indice || !indice->vindice || indice->cantidad_elementos_actual == 0)
         return ERROR;
 
     int pos = indice_buscar(indice, registro, indice->cantidad_elementos_actual, tamanyo, cmp);
@@ -89,7 +89,7 @@ int indice_buscar (const t_indice *indice, const void *registro, size_t nmemb,
 
 int indice_vacio(const t_indice *indice)
 {
-    if(indice->cantidad_elementos_actual == ERROR)
+    if(indice->cantidad_elementos_actual == 0)
         return OK;
     return ERROR;
 }
@@ -102,10 +102,9 @@ int indice_lleno(const t_indice *indice)
 
 void indice_vaciar(t_indice *indice)
 {
-    if (!indice)
+    if (!indice || !indice->vindice)
         return ;
     free(indice->vindice);
-    indice->vindice = NULL;
     indice->cantidad_elementos_actual = 0;
     indice->cantidad_elementos_maxima = 0;
 }
