@@ -1,7 +1,12 @@
 #ifndef INDICE_H_INCLUDED
 #define INDICE_H_INCLUDED
 
-#define CANT_ELEMENTOS 100
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+#define CANT_ELEMENTOS 7
 #define INCREMENTO 1.3
 #define OK 0
 #define ERROR 1
@@ -22,6 +27,7 @@ typedef struct
 
 void mostrarIndice(t_indice *ind); /// BORRAR PAR ENTREGAR SOLO ES TEST
 
+//TDA Indice
 void indice_crear(t_indice *indice, size_t nmemb, size_t tamanyo);
 
 void indice_redimensionar(t_indice *indice, size_t nmemb, size_t tamanyo);
@@ -31,8 +37,6 @@ int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
 
 int indice_eliminar(t_indice *indice, const void *registro, size_t tamanyo, int
                     (*cmp)(const void *, const void *));
-
-int cmp_por_dni(const void *a, const void *b);
 
 int indice_buscar (const t_indice *indice, const void *registro, size_t nmemb,
                    size_t tamanyo, int (*cmp)(const void *, const void *));
@@ -46,7 +50,8 @@ void indice_vaciar(t_indice* indice);
 int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
                   tamanyo, int (*cmp)(const void *, const void *));
 
-void indice_mostrar(const t_indice *ind);
+//Otra funciones para el indice
+int cmp_por_dni(const void *a, const void *b);
 
 int busquedaBinaria(const void *vec,const void *buscado, unsigned cantelem, size_t tamanyo, int(*cmp)(const void *, const void*));
 

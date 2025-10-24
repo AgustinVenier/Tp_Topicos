@@ -2,42 +2,34 @@
 //Procesar archivo
 int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso,t_indice * indice,int (*cmp)(const void *, const void *))
 {
-    char cad[BUFFER],aux[BUFFER];
+    char cad[BUFFER],aux[BUFFER+30];
     t_miembro m1;
     t_miembro *miembro = &m1;
     t_reg_indice auxReg;
     int valor;
     int seInserta;
     int contador=0;
-    FILE* fbin;
-    FILE* ftexto;
-    FILE* ferror;
+    FILE* ftexto = fopen(nombreArchivoTexto, "rt");
+    FILE* ferror = fopen(nombreArchivoError, "wt");
+    FILE* fbin = fopen(nombreArchivoBin, "wb");
 
-    ftexto = fopen(nombreArchivoTexto, "rt");
     if (ftexto == NULL)
     {
         printf("Error al abrir un archivo texto");
         return FALLA;
     }
-
-    ferror = fopen(nombreArchivoError, "wt");
     if (ferror == NULL)
     {
         printf("Error al abrir un archivo error");
-        fclose(ftexto);
         return FALLA;
     }
-
-    fbin = fopen(nombreArchivoBin, "wb");
     if (fbin == NULL)
     {
         printf("Error al abrir un archivo binario");
-        fclose(ftexto);
-        fclose(ferror);
         return FALLA;
     }
 
-    //CARGAMOS
+
     while(fgets(cad, sizeof(cad), ftexto))
     {
         sscanf(cad,
@@ -117,15 +109,13 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     fclose(ferror);
     return EXITO;
 }
-//suma los valores de todas las validaciones si retorna exito pasa a binario y
-//si retorna error crea un archivo de texto error
 
 //--------------------------------------------------------------------------------------
 ///Validacion General
 
 int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
 {
-    normalizar(miembro->nya); /// REVISAR AL LLAMAR NORMALIZA 2 VECES
+    normalizar(miembro->nya);
 
     if (!dniValido(miembro->dni))
         return 1; //error en DNI
@@ -142,7 +132,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     if (validarFechaCategoria(miembro->cat,&miembro->fecha_nac,f_proceso))
         return 5; // Error CATEGORIA, no es la indicada o vacio
 
-    if (fUltCoutaValid(&miembro->fecha_cuota,&miembro->fecha_afi,f_proceso))
+    if (fUltCoutaValido(&miembro->fecha_cuota,&miembro->fecha_afi,f_proceso))
         return 6; //error F ULT COUTA VALIDA
 
     if (!estadoValido(miembro->estado))
@@ -151,7 +141,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     if (!planValido(miembro->plan))
         return 8; //error PLAN
 
-    if(strcmp(miembro->email,"")!= 0  && !strcmpi(miembro->cat,"MENOR"))
+    if(strcmp(miembro->email,"")!=EXITO  && !strcmpi(miembro->cat,"MENOR"))
     {
         if (validarEmail(miembro->email))
             return 9; // error MAIL
@@ -162,6 +152,30 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     return EXITO ;
 }
 
+//--------------------------------------------------------------------------------------
+//Cargar fecha proceso
+t_fecha ingresarFechaProceso()
+{
+    int valorFechaProc;
+    t_fecha fecha;
+    t_fecha *pf = &fecha;
+
+    printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
+    scanf(FORMATO_FECHA, &fecha.dia, &fecha.mes, &fecha.anio);
+    valorFechaProc = validarFecha(pf);
+
+    while (valorFechaProc == FALLA)
+
+    {
+        printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
+        fflush(stdin);
+        scanf(FORMATO_FECHA, &fecha.dia, &fecha.mes, &fecha.anio);
+        valorFechaProc = validarFecha(pf);
+
+    }
+    fflush(stdin);
+    return fecha;
+}
 //--------------------------------------------------------------------------------------
 
 ///Validaciones Campos
@@ -213,9 +227,9 @@ int validarFecha(const t_fecha* f)
     return EXITO;
 }
 
-int validarFechaNacimiento(const t_fecha* nacimiento,const t_fecha * t_proceso,int cant_anios) // retorna 0 si es mayor a cant_anios, 1 si es menor, segun cuanto paso desde anios
+int validarFechaNacimiento(const t_fecha* nacimiento,const t_fecha * t_proceso,int cant_anios) // retorna 0 si es mayor a cant_anios, 1 si es menor, segun cuanto paso desde nacimiento hasta proceso
 {
-    // Calcular edad
+    // Calcula edad
     int edad = t_proceso->anio - nacimiento->anio;
 
     if (t_proceso->mes < nacimiento->mes || (t_proceso->mes == nacimiento->mes && t_proceso->dia < nacimiento->dia))
@@ -264,16 +278,16 @@ int validarEmail(char *cad)
         return FALLA;
     pc=strchr(pc,'@');
 
-    if(pc!=NULL && isalnum(*(pc-1)) && isalpha(*(pc+1)))  /// el de adelante del @ alphanum? o solo letra?
+    if(pc!=NULL && isalnum(*(pc-1)) && isalpha(*(pc+1)))
     {
         pc=strrchr(pc,'.');
-        if(pc!=NULL && isalpha(*(pc-1)) && isalpha(*(pc+1)))  /// el de adelante y atras del . alphanum? o solo letra?
+        if(pc!=NULL && isalpha(*(pc-1)) && isalpha(*(pc+1)))
             return EXITO;
     }
     return FALLA;
 }
 
-int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f_proceso) //sacar email
+int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f_proceso)
 {
     if(validarFechaNacimiento(fechaNac,f_proceso,18))
     {
@@ -292,7 +306,7 @@ int fNacValido(const t_fecha* fechaNac,const t_fecha * f_proceso)
     if (validarFecha(fechaNac) == FALLA)
         return FALLA;
 
-    if (validarFechaNacimiento(fechaNac,f_proceso,10) == FALLA) //pasaron 10 o mas anios
+    if (validarFechaNacimiento(fechaNac,f_proceso,ANIOS_DESDE_NACIMIENTO) == FALLA)
         return FALLA;
 
     return EXITO;
@@ -312,7 +326,7 @@ int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t
     return EXITO;
 }
 
-int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc)
+int fUltCoutaValido(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc)
 {
     if (compararFecha(fechaCuota, fechaAfi) <= EXITO) // cuota <= afiliación
         return FALLA;
@@ -330,7 +344,7 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
 {
     struct dirent *dir;
     DIR *d = opendir(subCarpeta);
-    int flag=0; //EXITO?
+    int flag=0;
 
     if (!d)
     {
@@ -339,12 +353,12 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
         return ; // La subcarpeta no existe o no se puede leer
     }
 
-    while ((dir = readdir(d)) != NULL && flag==0)
+    while ((dir = readdir(d)) != NULL && flag==EXITO)
     {
-        if (strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0)
+        if (strcmp(dir->d_name, ".") != EXITO && strcmp(dir->d_name, "..") != EXITO)
         {
             strcpy(nombreArchivo, dir->d_name);
-            flag=1; //FALLA?
+            flag=1;
         }
         else
             *nombreArchivo=' ';
@@ -355,7 +369,7 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
 
 int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const char *subcarpeta_binario,const char *subcarpeta_error,const t_fecha *pf)
 {
-    char aux_fecha[10], aux_nombre[60];
+    char aux_fecha[10], aux_nombre[61];
 
     if (*nombreArchivoBinario == ' ')
     {
@@ -386,7 +400,7 @@ int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const
         strcat(nombreArchivoBinario,".dat");
 
         printf("\n- Nombre viejo:%s \n- Nombre nuevo: %s\n\n",aux_nombre,nombreArchivoBinario);
-        if ((rename(aux_nombre,nombreArchivoBinario)) == 0)
+        if ((rename(aux_nombre,nombreArchivoBinario)) == EXITO)
         {
             printf("Archivo renombrado exitosamente!\n\n");
         }

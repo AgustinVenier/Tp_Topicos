@@ -1,7 +1,9 @@
 #include "functions.h"
 #include "indice.h"
+/*
 #include <stdlib.h>
 #include <unistd.h>
+*/
 void mostrarIndice(t_indice *indice) /// BORRAR PAR ENTREGAR SOLO ES TEST
 {
     int i;
@@ -25,7 +27,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 
         system("cls");
 
-        op = menu(
+        op = mostrarMenu(
                  "a. Alta\n"
                  "b. Baja\n"
                  "c. Modificacion\n"
@@ -101,7 +103,7 @@ void eliminarFinDeLinea(char *cad)
         *p = '\0';
 }
 
-char menu(const char *msj, const char *opc)
+char mostrarMenu(const char *msj, const char *opc)
 {
     char opta;
     int priVez = 1;
@@ -143,6 +145,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     unsigned nro_reg = ftell(pf) / sizeof(t_miembro);
 
     // Ingreso datos del nuevo miembro
+    fflush(stdin);
     printf("\n\nIngrese DNI: ");
     scanf("%ld", &m.dni);
     fflush(stdin);
@@ -364,7 +367,7 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         eliminarFinDeLinea(m.email);
     }
 
-    if(validaciones(&m, fecha) != ERROR)
+    if(validaciones(&m, fecha) != EXITO)
     {
         fclose(pf);
         return ERROR;

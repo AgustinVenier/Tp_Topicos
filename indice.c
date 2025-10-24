@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "indice.h"
 #include "functions.h"
 
@@ -19,13 +15,14 @@ void indice_crear(t_indice *indice, size_t nmemb, size_t tamanyo)
 
 void indice_redimensionar(t_indice *indice, size_t nmemb, size_t tamanyo)
 {
-    indice->vindice = realloc(indice->vindice, (nmemb * INCREMENTO) * tamanyo);   ///a preguntar (nmemb * INCREMENTO)
+    indice->vindice = realloc(indice->vindice, (nmemb * tamanyo) *INCREMENTO );
     if(!indice->vindice)
     {
         printf("No se ha podido asignar memoria\n");
         exit(ERROR);
     }
-    indice->cantidad_elementos_maxima = nmemb * INCREMENTO; ///VA A DAR CON UN NUMERO DECIMAL
+    //indice->cantidad_elementos_actual = 0; //ERROR?
+    indice->cantidad_elementos_maxima = (int)(nmemb * INCREMENTO);
 }
 int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
                      int (*cmp)(const void *, const void *))
@@ -39,7 +36,7 @@ int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
     // Verificar capacidad
     if (indice_lleno(indice) == OK)
     {
-        indice_redimensionar(indice,indice->cantidad_elementos_maxima,tamanyo);
+        indice_redimensionar(indice,indice->cantidad_elementos_actual,tamanyo);
     }
    /*int i = indice->cantidad_elementos_actual - 1;
     while (i >= 0 && cmp(base + i * tamanyo, registro) > 0)
@@ -108,9 +105,9 @@ void indice_vaciar(t_indice *indice)
     indice->cantidad_elementos_maxima = 0;
 }
 
-// suponemos que el registro de indice temporal que se carga es válido.
+
 int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t
-                  tamanyo, int (*cmp)(const void *, const void *)) ///no se si esta bien, revisar
+                  tamanyo, int (*cmp)(const void *, const void *))
 {
     int pos = 0;
     t_miembro m;
@@ -169,18 +166,3 @@ int busquedaBinaria(const void *vec, const void *buscado, unsigned cantelem, siz
     }
     return NO_EXISTE;
 }
-
-///FUNCION GENERICA
-//int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t tamanyo,
-//                  int (*cmp)(const void *, const void *))
-//{
-//    FILE *fp = fopen(path, "rb");
-//    if(!fp)
-//        return ERROR;
-//
-//    while(fread(vreg_ind, tamanyo, 1, fp) == 1)
-//        indice_insertar(indice, vreg_ind, tamanyo, cmp);
-//
-//    fclose(fp);
-//    return OK;
-//}
