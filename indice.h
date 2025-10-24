@@ -6,7 +6,7 @@
 #include <string.h>
 
 
-#define CANT_ELEMENTOS 7
+#define CANT_ELEMENTOS 100
 #define INCREMENTO 1.3
 #define OK 0
 #define ERROR 1

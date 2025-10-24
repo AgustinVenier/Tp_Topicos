@@ -9,25 +9,35 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     int valor;
     int seInserta;
     int contador=0;
-    FILE* ftexto = fopen(nombreArchivoTexto, "rt");
-    FILE* ferror = fopen(nombreArchivoError, "wt");
-    FILE* fbin = fopen(nombreArchivoBin, "wb");
+    FILE* fbin;
+    FILE* ftexto;
+    FILE* ferror;
 
+    ftexto = fopen(nombreArchivoTexto, "rt");
     if (ftexto == NULL)
     {
         printf("Error al abrir un archivo texto");
         return FALLA;
     }
+
+    ferror = fopen(nombreArchivoError, "wt");
     if (ferror == NULL)
     {
         printf("Error al abrir un archivo error");
+        fclose(ftexto);
         return FALLA;
     }
+
+    fbin = fopen(nombreArchivoBin, "wb");
     if (fbin == NULL)
     {
         printf("Error al abrir un archivo binario");
+        fclose(ftexto);
+        fclose(ferror);
         return FALLA;
     }
+
+    //CARGAMOS
 
 
     while(fgets(cad, sizeof(cad), ftexto))
@@ -59,7 +69,11 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
             else
             {
                 if(seInserta==-1)
+                {
                     fwrite(miembro, sizeof(t_miembro), 1, fbin);
+                    contador++;
+                }
+
                 else
                     valor=10;
             }
@@ -141,7 +155,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     if (!planValido(miembro->plan))
         return 8; //error PLAN
 
-    if(strcmp(miembro->email,"")!=EXITO  && !strcmpi(miembro->cat,"MENOR"))
+    if(strcmp(miembro->email,"")!=0  && !strcmpi(miembro->cat,"MENOR"))
     {
         if (validarEmail(miembro->email))
             return 9; // error MAIL
@@ -353,9 +367,9 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
         return ; // La subcarpeta no existe o no se puede leer
     }
 
-    while ((dir = readdir(d)) != NULL && flag==EXITO)
+    while ((dir = readdir(d)) != NULL && flag==0)
     {
-        if (strcmp(dir->d_name, ".") != EXITO && strcmp(dir->d_name, "..") != EXITO)
+        if (strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0)
         {
             strcpy(nombreArchivo, dir->d_name);
             flag=1;
@@ -399,8 +413,9 @@ int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const
         strcat(nombreArchivoBinario,aux_fecha);
         strcat(nombreArchivoBinario,".dat");
 
-        printf("\n- Nombre viejo:%s \n- Nombre nuevo: %s\n\n",aux_nombre,nombreArchivoBinario);
-        if ((rename(aux_nombre,nombreArchivoBinario)) == EXITO)
+        printf("Recuperando desde: %s\nLuego de finalizar se guardara con el nombre: %s\n",nombreArchivoBinario,aux_nombre);
+        //printf("\n- Nombre viejo:%s \n- Nombre nuevo: %s\n\n",aux_nombre);
+        if ((rename(aux_nombre,nombreArchivoBinario)) == 0)
         {
             printf("Archivo renombrado exitosamente!\n\n");
         }
@@ -408,7 +423,6 @@ int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const
         {
             perror("Error al renombrar el archivo");
         }
-        system("pause");
         return EXITO; // Recuperar
     }
 }

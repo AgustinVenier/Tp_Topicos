@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     fechaProceso = ingresarFechaProceso();
     LeeSubCarpeta(subcarpeta_binario,nombreArchivoBinario);
     indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
+
     flagProcesar=crearNombreArchivo(nombreArchivoBinario,nombreArchivoError,subcarpeta_binario,subcarpeta_error,&fechaProceso);
 
     if(flagProcesar==FALLA)
@@ -28,9 +29,16 @@ int main(int argc, char *argv[])
             printf("Error en el procesamiento\n");
             return 0;
         }
-    }
-    printf("Nombre archivo binario:%s",nombreArchivoBinario);
 
+    printf("Nombre archivo binario:%s\n",nombreArchivoBinario);
+    }
+    else if(indice_cargar(nombreArchivoBinario,&indice,indice.vindice,sizeof(t_reg_indice),cmp_por_dni)==ERROR){
+        indice_vaciar(&indice);
+        return 0;
+    }
+
+
+    system("pause");
     //mostrarMiembros(nombreArchivoBinario); //Solo para testear
 
     /// LOGICA PARTE 2 Y MENU

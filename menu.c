@@ -22,11 +22,11 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     char op;
     int resultado; // Para guardar el valor devuelto por cada operación
     do{
-        //mostrarIndice(ind); /// BORRAR PAR ENTREGAR SOLO ES TEST
+
         printf("\n");
 
         system("cls");
-
+        mostrarIndice(ind);
         op = mostrarMenu(
                  "a. Alta\n"
                  "b. Baja\n"
