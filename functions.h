@@ -9,9 +9,10 @@
 #include "indice.h"
 
 #define EXITO 0
-#define FALLA 1   //este se cambia
+#define FALLA 1
 #define BUFFER 250
 #define FORMATO_FECHA "%d/%d/%d"
+#define ANIOS_DESDE_NACIMIENTO 10
 #define dniValido(a) (1000000<(a)&&(a)<100000000)
 #define sexValido(a) (toupper(a)=='F'||toupper(a)=='M')
 #define estadoValido(a) (toupper(a)=='A'||toupper(a)=='B')
@@ -27,17 +28,17 @@ typedef struct
 {
     long dni; //1000000< DNI <100000000
     char nya[61];
-    t_fecha fecha_nac; //Validaci�n formal y < fecha de proceso � 10 a�os
+    t_fecha fecha_nac; //Validacion formal y < fecha de proceso // 10 anios
     char sexo; //'F' | 'M'
-    t_fecha fecha_afi; //Validaci�n formal, <= fecha de proceso y > fecha nacimiento
-    char cat[11]; //�MENOR�, menor de 18 a�os |||||| �ADULTO�, mayor de 18 a�os.
-    t_fecha fecha_cuota; //> fecha de afiliaci�n y <= fecha de proceso.
+    t_fecha fecha_afi; //Validacion formal, <= fecha de proceso y > fecha nacimiento
+    char cat[11]; //MENOR, menor de 18 anios |ADULTO�, mayor de 18 anios.
+    t_fecha fecha_cuota; //> fecha de afiliacion y <= fecha de proceso.
     char estado;// 'A'(ALTA) o 'B'(BAJA)
     char plan[10]; //'BASIC'-'PREMIUM'-'VIP'-'FAMILY'
     char email[30]; //si es menor de edad, debera tener un email asociado. Validar formato del email.
 } t_miembro;
 
-//Procesar Archivo
+//Procesar Archivo Texto
 int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso,t_indice * indice,int (*cmp)(const void *, const void *));
 
 //Validacion General
@@ -55,17 +56,17 @@ int validarEmail(char *cad);
 int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f_proceso);
 int fNacValido(const t_fecha* fechaNac,const t_fecha * f_proceso);
 int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t_fecha* fechaNac);
-int fUltCoutaValid(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc);
+int fUltCoutaValido(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc);
 
 //Directorios Archivos
 void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo); //devuelve el nombre de  un archivo de esa subcarpeta
-int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const char *subcarpeta_binario,const char *subcarpeta_error,const t_fecha *pf);
+int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const char *subcarpeta_binario,const char *subcarpeta_error,const t_fecha *pf); //crea los nombres de los archivos segun fecha proceso
 
-void mostrarMiembros(const char *nombreArch);
+void mostrarMiembros(const char *nombreArch); /// BORRAR PAR ENTREGAR SOLO ES TEST
 
-//Parte 2
+//Funciones Segunda Parte
 void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
-char menu(const char *msj, const char *opc);
+char mostrarMenu(const char *msj, const char *opc);
 void preguntarCambio(const char * cad, char* aux);
 void eliminarFinDeLinea(char *cad);
 int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha);

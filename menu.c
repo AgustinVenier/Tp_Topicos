@@ -27,7 +27,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 
         system("cls");
 
-        op = menu(
+        op = mostrarMenu(
                  "a. Alta\n"
                  "b. Baja\n"
                  "c. Modificacion\n"
@@ -103,7 +103,7 @@ void eliminarFinDeLinea(char *cad)
         *p = '\0';
 }
 
-char menu(const char *msj, const char *opc)
+char mostrarMenu(const char *msj, const char *opc)
 {
     char opta;
     int priVez = 1;
