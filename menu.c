@@ -19,10 +19,12 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 {
     char op;
     int resultado; // Para guardar el valor devuelto por cada operación
-    do
-    {
-        mostrarIndice(ind); /// BORRAR PAR ENTREGAR SOLO ES TEST
+    do{
+        //mostrarIndice(ind); /// BORRAR PAR ENTREGAR SOLO ES TEST
         printf("\n");
+
+        system("cls");
+
         op = menu(
                  "a. Alta\n"
                  "b. Baja\n"
@@ -35,62 +37,61 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
              );
         switch(op)
         {
-        case 'a':
-            resultado = Alta(nombreArch,ind, fecha);
-            if (resultado == ERROR)
-                printf("Error al dar de alta el miembro.\n");
-            else
-                printf("Alta realizada con exito.\n");
-            sleep(2);
-            break;
+            case 'a':
+                resultado = Alta(nombreArch,ind, fecha);
+                if (resultado == ERROR)
+                    printf("\nError al dar de alta el miembro.\n");
+                else
+                    printf("\nAlta realizada con exito.\n");
+                sleep(2);
+                break;
 
-        case 'b':
-            resultado = Baja(nombreArch, ind);
-            if (resultado == ERROR)
-                printf("Error al dar la baja del miembro.\n");
-            else
-                printf("Baja realizada con exito.\n");
-            sleep(2);
-            break;
+            case 'b':
+                resultado = Baja(nombreArch, ind);
+                if (resultado == ERROR)
+                    printf("\nError al dar la baja del miembro.\n");
+                else
+                    printf("\nBaja realizada con exito.\n");
+                sleep(2);
+                break;
 
-        case 'c':
-            resultado = Modificacion(nombreArch, ind, fecha);
-            if (resultado == ERROR)
-                printf("Error al modificar el miembro.\n");
-            else
-                printf("Modificacion realizada con exito.\n");
-            sleep(2);
-            break;
+            case 'c':
+                resultado = Modificacion(nombreArch, ind, fecha);
+                if (resultado == ERROR)
+                    printf("\nError al modificar el miembro.\n");
+                else
+                    printf("\nModificacion realizada con exito.\n");
+                sleep(2);
+                break;
 
-        case 'd':
-            resultado = MostrarInfoMiembro(nombreArch,ind);
-            if (resultado == ERROR)
-                printf("Error al mostrar\n");
-            else
-                printf("Realizada con exito.\n");
-            system("pause");
-            break;
+            case 'd':
+                resultado = MostrarInfoMiembro(nombreArch,ind);
+                if (resultado == ERROR)
+                    printf("\nError al mostrar\n");
+                else
+                    printf("\nRealizada con exito.\n");
+                system("pause");
+                break;
 
-        case 'e':
-            resultado = ListadoXDNI(nombreArch, ind);
-            if (resultado == ERROR)
-                printf("Error al listar\n");
-            else
-                printf("Realizada con exito.\n");
-            system("pause");
-            break;
+            case 'e':
+                resultado = ListadoXDNI(nombreArch, ind);
+                if (resultado == ERROR)
+                    printf("\nError al listar\n");
+                else
+                    printf("\nRealizada con exito.\n");
+                system("pause");
+                break;
 
-        case 'f':
-            resultado = ListadoXPlan(nombreArch, ind);
-            if (resultado == ERROR)
-                printf("Error al Listar\n");
-            else
-                printf("Realizada con exito.\n");
-            system("pause");
-            break;
+            case 'f':
+                resultado = ListadoXPlan(nombreArch, ind);
+                if (resultado == ERROR)
+                    printf("\nError al Listar\n");
+                else
+                    printf("\nRealizada con exito.\n");
+                system("pause");
+                break;
         }
-    }
-    while(op != 'g');
+    }while(op != 'g');
 }
 
 void eliminarFinDeLinea(char *cad)
@@ -104,9 +105,10 @@ char menu(const char *msj, const char *opc)
 {
     char opta;
     int priVez = 1;
-    printf("\n=============================================\n");
-    printf("            GESTION DE MIEMBROS\n");
-    printf("=============================================\n");
+    system("cls");
+    printf("\n===================================================\n");
+    printf("              GESTION DE MIEMBROS\n");
+    printf("===================================================\n");
     do
     {
         fflush(stdin);
@@ -192,7 +194,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     eliminarFinDeLinea(m.email);
 
     // Valido los campos del miembro
-    if ( toupper(m.estado)=='B' || validaciones(&m, fecha) != EXITO)
+    if (toupper(m.estado)=='B' || validaciones(&m, fecha) != EXITO)
     {
         printf("Registro invalido según validaciones. Alta cancelada.\n");
         fclose(pf);
@@ -380,7 +382,7 @@ int MostrarInfoMiembro(const char *nombreArch, t_indice *ind)
     t_miembro m;
     t_reg_indice clave;
 
-    printf("\n=== INFORMACION DE MIEMBRO ===\n");
+    printf("\n============= INFORMACION DE MIEMBRO =============\n");
     printf("Ingrese DNI a visualizar: ");
     scanf("%ld", &m.dni);
     getchar();
@@ -431,12 +433,15 @@ int ListadoXDNI(const char *nombreArch, t_indice *ind)
     t_reg_indice *vecOrig = (t_reg_indice *)ind->vindice;
 
 
-    printf("\n=== LISTADO POR DNI ===\n");
+    printf("\n\n=====================================================================================================================================================================================\n");
+    printf("                                                                                                    LISTADO POR DNI");
+    printf("\n======================================================================================================================================================================================\n");
     for(i = 0; i < ind->cantidad_elementos_actual; i++)
     {
         fseek(pf, (vecOrig+i)->nro_reg * sizeof(t_miembro), SEEK_SET);
         fread(&m, sizeof(t_miembro), 1, pf);
-        printf("%ld - %-30s - Plan: %-10s - Email: %s\n", m.dni, m.nya, m.plan, m.email); ///IMPRIMIR MAS CAMPOS
+        printf("-  DNI: %8ld  -  Nombre: %-20s  -  FNac: %02d/%02d/%04d  -  Sexo: %c  -  FAfi: %02d/%02d/%04d  -  Categoria: %-5s  -  FUltCuota: %02d/%02d/%04d  -  Plan: %-10s  -  Email: %s\n", m.dni, m.nya, m.fecha_nac.dia,
+                m.fecha_nac.mes, m.fecha_nac.anio, m.sexo, m.fecha_afi.dia,m.fecha_afi.mes, m.fecha_afi.anio, m.cat, m.fecha_cuota.dia, m.fecha_cuota.mes, m.fecha_cuota.anio, m.plan, m.email); ///IMPRIMIR MAS CAMPOS
     }
     fclose(pf);
     return OK;
@@ -445,7 +450,7 @@ int ListadoXDNI(const char *nombreArch, t_indice *ind)
 int ListadoXPlan(const char *nombreArch, t_indice *ind)
 {
     int i, n;
-    char planes[4][10]= {"Basic","Premium","Vip","Family"};
+    char planes[4][10]= {"BASIC","PREMIUM","VIP","FAMILY"};
     t_miembro aux;
     FILE *pf = fopen(nombreArch, "rb");
     if (!pf)
@@ -463,9 +468,11 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
 
     t_reg_indice *vecInd = (t_reg_indice *)ind->vindice;    // Casteo el vector del índice al tipo correcto
 
-    for(i=0; i<4; i++)  //4?
+    for(i=0; i<4; i++)
     {
-        printf("\n\n======== Plan %s ========\n",(planes[i]));
+        printf("\n\n=====================================\n");
+        printf("             PLAN %s \n",(planes[i]));
+        printf("=====================================\n");
         for(n=0; n<ind->cantidad_elementos_actual; n++)
         {
             fseek(pf,sizeof(t_miembro)*((vecInd+n)->nro_reg),0);
@@ -477,12 +484,12 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
                 printf("Fecha de Nacimiento: %02d/%02d/%04d\n", aux.fecha_nac.dia, aux.fecha_nac.mes, aux.fecha_nac.anio);
                 printf("Sexo: %c\n", aux.sexo);
                 printf("Fecha de Afiliacion: %02d/%02d/%04d\n", aux.fecha_afi.dia, aux.fecha_afi.mes, aux.fecha_afi.anio);
-                printf("Categoría: %s\n", aux.cat);
+                printf("Categoria: %s\n", aux.cat);
                 printf("Fecha de ultima Cuota: %02d/%02d/%04d\n", aux.fecha_cuota.dia, aux.fecha_cuota.mes, aux.fecha_cuota.anio);
                 printf("Estado: %c\n", aux.estado);
                 printf("Plan: %s\n", aux.plan);
                 printf("Email: %s\n", aux.email);
-                printf("-------------------------------\n");
+                printf("-------------------------------------\n");
             }
         }
     }
@@ -502,6 +509,5 @@ void preguntarCambio(const char * cad, char* aux)
         {
             printf("Opcion invalida, ingrese de nuevo: ");
         }
-    }
-    while(toupper(*aux)!='S' && toupper(*aux)!='N');
+    }while(toupper(*aux)!='S' && toupper(*aux)!='N');
 }

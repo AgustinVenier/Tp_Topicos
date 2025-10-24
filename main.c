@@ -29,28 +29,27 @@ int main(int argc, char *argv[])
     LeeSubCarpeta(subcarpeta_binario,nombreArchivoBinario);
     indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
     flagProcesar=crearNombreArchivo(nombreArchivoBinario,nombreArchivoError,subcarpeta_binario,subcarpeta_error,pf);
+
     if(flagProcesar==FALLA)
     {
         procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,pf,&indice,cmp_por_dni);
         if (procesamiento==EXITO)
             printf("Procesamiento exitoso\n");
-        else{
+        else
+        {
             printf("Error en el procesamiento\n");
             return 0;
         }
-
-
     }
     printf("Nombre archivo binario:%s",nombreArchivoBinario);
 
-    mostrarMiembros(nombreArchivoBinario); //Solo para testear
+    //mostrarMiembros(nombreArchivoBinario); //Solo para testear
 
     /// LOGICA PARTE 2 Y MENU
-    if(flagProcesar!=FALLA){
+    if(flagProcesar!=FALLA)
+    {
       if(indice_cargar(nombreArchivoBinario,&indice,indice.vindice,sizeof(t_reg_indice),cmp_por_dni)==ERROR)
-        {
             return 0;
-        }
     }
 
     menuMiembros(nombreArchivoBinario,&indice, &fechaProceso);

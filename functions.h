@@ -1,6 +1,7 @@
 #ifndef FUNCTIONS_H_INCLUDED
 #define FUNCTIONS_H_INCLUDED
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
 #include <dirent.h>   // Para manejar directorios
@@ -43,7 +44,6 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 int validaciones(t_miembro *, const t_fecha* f_proceso);
 
 //Validaciones Campos
-
 int validarFecha(const t_fecha* f);
 int compararFecha(const t_fecha* fecha_1,const t_fecha* fecha_2);
 void normalizar(char * cad); //normalizar cadena
@@ -68,7 +68,6 @@ void eliminarFinDeLinea(char *cad);
 int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
 int Baja(const char *nombreArch, t_indice *ind);
 int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha);
-
 int MostrarInfoMiembro(const char *nombreArch, t_indice *ind);
 int ListadoXDNI(const char *nombreArch, t_indice *ind);
 int ListadoXPlan(const char *nombreArch, t_indice *ind);

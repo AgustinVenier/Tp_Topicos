@@ -5,10 +5,10 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     char cad[BUFFER],aux[BUFFER];
     t_miembro m1;
     t_miembro *miembro = &m1;
+    t_reg_indice auxReg;
     int valor;
     int seInserta;
     int contador=0;
-    t_reg_indice auxReg;
     FILE* ftexto = fopen(nombreArchivoTexto, "rt");
     FILE* ferror = fopen(nombreArchivoError, "wt");
     FILE* fbin = fopen(nombreArchivoBin, "wb");
@@ -46,57 +46,60 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 
         if(valor == EXITO)
         {
-            if(toupper(miembro->estado)=='A'){
+            if(toupper(miembro->estado)=='A')
                 seInserta=indice_insertar(indice,&auxReg,sizeof(t_reg_indice),cmp);
-            }else{
+            else
                 seInserta=-1;
-            }
 
-            if(seInserta==OK){
+            if(seInserta==OK)
+            {
                 contador++;
                 fwrite(miembro, sizeof(t_miembro), 1, fbin); ///revisar
-            }else if(seInserta==-1){
-                fwrite(miembro, sizeof(t_miembro), 1, fbin);
-            }else{
-                valor=10;
+            }
+            else
+            {
+                if(seInserta==-1)
+                    fwrite(miembro, sizeof(t_miembro), 1, fbin);
+                else
+                    valor=10;
             }
         }
 
-        if(valor != EXITO){
+        if(valor != EXITO)
+        {
             switch (valor)
             {
-            case 1:
-                strcpy(aux,"\"Error en campo DNI\",");
-                break;
-            case 2:
-                strcpy(aux,"\"Error en campo F NACIMIENTO\",");
-                break;
-            case 3:
-                strcpy(aux,"\"Error en campo SEXO\",");
-                break;
-            case 4:
-                strcpy(aux,"\"Error en campo F AFILIACION\",");
-                break;
-            case 5:
-                strcpy(aux,"\"Error en campo CATEGORIA\",");
-                break;
-            case 6:
-                strcpy(aux,"\"Error en campo F ULT COUTA VALIDA\",");
-                break;
-            case 7:
-                strcpy(aux,"\"Error en campo ESTADO\",");
-                break;
-            case 8:
-                strcpy(aux,"\"Error en campo PLAN\",");
-                break;
-            case 9:
-                strcpy(aux,"\"Error en campo MAIL\",");
-                break;
-            case 10:
-                strcpy(aux,"\"Error DNI DUPLICADO\",");
-                break;
+                case 1:
+                    strcpy(aux,"\"Error en campo DNI\",");
+                    break;
+                case 2:
+                    strcpy(aux,"\"Error en campo F NACIMIENTO\",");
+                    break;
+                case 3:
+                    strcpy(aux,"\"Error en campo SEXO\",");
+                    break;
+                case 4:
+                    strcpy(aux,"\"Error en campo F AFILIACION\",");
+                    break;
+                case 5:
+                    strcpy(aux,"\"Error en campo CATEGORIA\",");
+                    break;
+                case 6:
+                    strcpy(aux,"\"Error en campo F ULT COUTA VALIDA\",");
+                    break;
+                case 7:
+                    strcpy(aux,"\"Error en campo ESTADO\",");
+                    break;
+                case 8:
+                    strcpy(aux,"\"Error en campo PLAN\",");
+                    break;
+                case 9:
+                    strcpy(aux,"\"Error en campo MAIL\",");
+                    break;
+                case 10:
+                    strcpy(aux,"\"Error DNI DUPLICADO\",");
+                    break;
             }
-
             strcat(aux,cad);
             fprintf(ferror, "%s", aux);
         }
@@ -148,7 +151,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     else
         strcpy(miembro->email,"");
 
-    return EXITO ; // 0, registro VALIDO
+    return EXITO ;
 }
 
 //--------------------------------------------------------------------------------------
@@ -374,15 +377,16 @@ int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const
         strcat(nombreArchivoBinario,aux_fecha);
         strcat(nombreArchivoBinario,".dat");
 
-        printf("Nombre viejo:%s \n Nombre nuevo: %s\n",aux_nombre,nombreArchivoBinario);
+        printf("\n- Nombre viejo:%s \n- Nombre nuevo: %s\n\n",aux_nombre,nombreArchivoBinario);
         if ((rename(aux_nombre,nombreArchivoBinario)) == EXITO)
         {
-            printf("Archivo renombrado exitosamente");
+            printf("Archivo renombrado exitosamente!\n\n");
         }
         else    // Si falla, imprime el error del sistema
         {
             perror("Error al renombrar el archivo");
         }
+        system("pause");
         return EXITO; // Recuperar
     }
 }
