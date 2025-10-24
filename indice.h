@@ -1,6 +1,11 @@
 #ifndef INDICE_H_INCLUDED
 #define INDICE_H_INCLUDED
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
 #define CANT_ELEMENTOS 100
 #define INCREMENTO 1.3
 #define OK 0

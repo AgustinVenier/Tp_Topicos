@@ -6,33 +6,21 @@
 
 int main(int argc, char *argv[])
 {
-    int procesamiento,valorFechaProc;
+    int procesamiento;
     char nombreArchivoBinario[60],nombreArchivoError[60];
     int flagProcesar;
 
     t_fecha fechaProceso;
-    t_fecha *pf = &fechaProceso;
     t_indice indice;
 
-    printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
-    scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
-    valorFechaProc = validarFecha(pf);   // pf es puntero válido
-
-    while (valorFechaProc == FALLA)
-    {
-        printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
-        fflush(stdin);
-        scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
-        valorFechaProc = validarFecha(pf);
-    }
-
+    fechaProceso = ingresarFechaProceso();
     LeeSubCarpeta(subcarpeta_binario,nombreArchivoBinario);
     indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
-    flagProcesar=crearNombreArchivo(nombreArchivoBinario,nombreArchivoError,subcarpeta_binario,subcarpeta_error,pf);
+    flagProcesar=crearNombreArchivo(nombreArchivoBinario,nombreArchivoError,subcarpeta_binario,subcarpeta_error,&fechaProceso);
 
     if(flagProcesar==FALLA)
     {
-        procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,pf,&indice,cmp_por_dni);
+        procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,&fechaProceso,&indice,cmp_por_dni);
         if (procesamiento==EXITO)
             printf("Procesamiento exitoso\n");
         else

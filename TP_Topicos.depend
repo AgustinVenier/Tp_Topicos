@@ -1,15 +1,17 @@
 # depslib dependency file v1.0
-1761247986 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\main.c
+1761314111 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\main.c
 	"functions.h"
 
-1761247974 c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.h
+1761313920 c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.h
 	<stdio.h>
+	<stdlib.h>
 	<ctype.h>
 	<string.h>
 	<dirent.h>
+	<unistd.h>
 	"indice.h"
 
-1761247515 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.c
+1761314062 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.c
 	"functions.h"
 
 1761188232 source:c:\users\agust\desktop\tp_topicos\tp_topicos\main.c
@@ -62,19 +64,20 @@
 	"indice.h"
 	<stdlib.h>
 
-1761247831 c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\indice.h
-
-1761242483 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\indice.c
+1761312057 c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\indice.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
+
+1761312090 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\indice.c
 	"indice.h"
 	"functions.h"
 
-1761247814 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\menu.c
+1761311978 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\menu.c
 	"functions.h"
 	"indice.h"
 	<stdlib.h>
+	<unistd.h>
 
 1761274745 source:c:\users\camila navarro\tp_topicos\menu.c
 	"functions.h"

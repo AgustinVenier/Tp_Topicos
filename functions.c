@@ -155,6 +155,40 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
 }
 
 //--------------------------------------------------------------------------------------
+//Cargar fecha proceso
+t_fecha ingresarFechaProceso()
+{
+    int valorFechaProc;
+    t_fecha fecha;
+    t_fecha *pf = &fecha;
+
+
+    printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
+
+    scanf(FORMATO_FECHA, &fecha.dia, &fecha.mes, &fecha.anio);
+
+    valorFechaProc = validarFecha(pf);   // pf es puntero válido
+
+
+
+    while (valorFechaProc == FALLA)
+
+    {
+
+        printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
+
+        fflush(stdin);
+
+        scanf(FORMATO_FECHA, &fecha.dia, &fecha.mes, &fecha.anio);
+
+        valorFechaProc = validarFecha(pf);
+
+    }
+    fflush(stdin);
+    // Devolvemos la estructura de fecha válida (por valor)
+    return fecha;
+}
+//--------------------------------------------------------------------------------------
 
 ///Validaciones Campos
 

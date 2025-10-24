@@ -5,8 +5,8 @@
 #include <ctype.h>
 #include <string.h>
 #include <dirent.h>   // Para manejar directorios
+#include <unistd.h> // Para sleep
 #include "indice.h"
-
 
 #define EXITO 0
 #define FALLA 1   //este se cambia
@@ -42,6 +42,9 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 
 //Validacion General
 int validaciones(t_miembro *, const t_fecha* f_proceso);
+
+//Cargar fecha proceso
+t_fecha ingresarFechaProceso();
 
 //Validaciones Campos
 int validarFecha(const t_fecha* f);
