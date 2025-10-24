@@ -1,9 +1,7 @@
 #include "functions.h"
 #include "indice.h"
-/*
 #include <stdlib.h>
 #include <unistd.h>
-*/
 void mostrarIndice(t_indice *indice) /// BORRAR PAR ENTREGAR SOLO ES TEST
 {
     int i;
@@ -145,7 +143,6 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     unsigned nro_reg = ftell(pf) / sizeof(t_miembro);
 
     // Ingreso datos del nuevo miembro
-    fflush(stdin);
     printf("\n\nIngrese DNI: ");
     scanf("%ld", &m.dni);
     fflush(stdin);
@@ -367,7 +364,7 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         eliminarFinDeLinea(m.email);
     }
 
-    if(validaciones(&m, fecha) != EXITO)
+    if(validaciones(&m, fecha) != ERROR)
     {
         fclose(pf);
         return ERROR;

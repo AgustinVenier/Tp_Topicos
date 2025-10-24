@@ -1,4 +1,6 @@
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "indice.h"
 #include "functions.h"
@@ -23,7 +25,6 @@ void indice_redimensionar(t_indice *indice, size_t nmemb, size_t tamanyo)
         printf("No se ha podido asignar memoria\n");
         exit(ERROR);
     }
-    indice->cantidad_elementos_actual = 0; //ERROR?
     indice->cantidad_elementos_maxima = nmemb * INCREMENTO; ///VA A DAR CON UN NUMERO DECIMAL
 }
 int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
@@ -38,7 +39,7 @@ int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
     // Verificar capacidad
     if (indice_lleno(indice) == OK)
     {
-        indice_redimensionar(indice,indice->cantidad_elementos_actual,tamanyo);
+        indice_redimensionar(indice,indice->cantidad_elementos_maxima,tamanyo);
     }
    /*int i = indice->cantidad_elementos_actual - 1;
     while (i >= 0 && cmp(base + i * tamanyo, registro) > 0)
@@ -168,3 +169,18 @@ int busquedaBinaria(const void *vec, const void *buscado, unsigned cantelem, siz
     }
     return NO_EXISTE;
 }
+
+///FUNCION GENERICA
+//int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t tamanyo,
+//                  int (*cmp)(const void *, const void *))
+//{
+//    FILE *fp = fopen(path, "rb");
+//    if(!fp)
+//        return ERROR;
+//
+//    while(fread(vreg_ind, tamanyo, 1, fp) == 1)
+//        indice_insertar(indice, vreg_ind, tamanyo, cmp);
+//
+//    fclose(fp);
+//    return OK;
+//}

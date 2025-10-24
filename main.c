@@ -6,21 +6,45 @@
 
 int main(int argc, char *argv[])
 {
-    int procesamiento;
+    int procesamiento,valorFechaProc;
     char nombreArchivoBinario[60],nombreArchivoError[60];
     int flagProcesar;
 
     t_fecha fechaProceso;
+    t_fecha *pf = &fechaProceso;
     t_indice indice;
 
-    fechaProceso = ingresarFechaProceso();
+//    printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
+//    scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
+//    valorFechaProc = validarFecha(pf);   // pf es puntero válido
+//
+//    while (valorFechaProc == FALLA)
+//    {
+//        printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
+//        fflush(stdin);
+//        scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
+//        valorFechaProc = validarFecha(pf);
+//    }
+
+    ///SE PUEDE HACER UNA FUNCION
+    printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
+    do{
+        scanf(FORMATO_FECHA, &pf->dia, &pf->mes, &pf->anio);
+        fflush(stdin);
+        valorFechaProc = validarFecha(pf);
+        if(valorFechaProc == FALLA){
+            printf("Fecha ingresada incorrecta");
+            printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
+        }
+    }while(valorFechaProc == FALLA);
+
     LeeSubCarpeta(subcarpeta_binario,nombreArchivoBinario);
     indice_crear(&indice,CANT_ELEMENTOS,sizeof(t_reg_indice));
-    flagProcesar=crearNombreArchivo(nombreArchivoBinario,nombreArchivoError,subcarpeta_binario,subcarpeta_error,&fechaProceso);
+    flagProcesar=crearNombreArchivo(nombreArchivoBinario,nombreArchivoError,subcarpeta_binario,subcarpeta_error,pf);
 
     if(flagProcesar==FALLA)
     {
-        procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,&fechaProceso,&indice,cmp_por_dni);
+        procesamiento=pasajeTextoBinario(nombreArchivoTexto,nombreArchivoBinario,nombreArchivoError,pf,&indice,cmp_por_dni);
         if (procesamiento==EXITO)
             printf("Procesamiento exitoso\n");
         else
@@ -29,17 +53,15 @@ int main(int argc, char *argv[])
             return 0;
         }
     }
+    else if(indice_cargar(nombreArchivoBinario,&indice,indice.vindice,sizeof(t_reg_indice),cmp_por_dni)==ERROR){
+        indice_vaciar(&indice);
+        return 0;
+    }
     printf("Nombre archivo binario:%s",nombreArchivoBinario);
 
     //mostrarMiembros(nombreArchivoBinario); //Solo para testear
 
     /// LOGICA PARTE 2 Y MENU
-    if(flagProcesar!=FALLA)
-    {
-      if(indice_cargar(nombreArchivoBinario,&indice,indice.vindice,sizeof(t_reg_indice),cmp_por_dni)==ERROR)
-            return 0;
-    }
-
     menuMiembros(nombreArchivoBinario,&indice, &fechaProceso);
 
     indice_vaciar(&indice);

@@ -9,27 +9,35 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     int valor;
     int seInserta;
     int contador=0;
-    FILE* ftexto = fopen(nombreArchivoTexto, "rt");
-    FILE* ferror = fopen(nombreArchivoError, "wt");
-    FILE* fbin = fopen(nombreArchivoBin, "wb");
+    FILE* fbin;
+    FILE* ftexto;
+    FILE* ferror;
 
+    ftexto = fopen(nombreArchivoTexto, "rt");
     if (ftexto == NULL)
     {
         printf("Error al abrir un archivo texto");
         return FALLA;
     }
+
+    ferror = fopen(nombreArchivoError, "wt");
     if (ferror == NULL)
     {
         printf("Error al abrir un archivo error");
+        fclose(ftexto);
         return FALLA;
     }
+
+    fbin = fopen(nombreArchivoBin, "wb");
     if (fbin == NULL)
     {
         printf("Error al abrir un archivo binario");
+        fclose(ftexto);
+        fclose(ferror);
         return FALLA;
     }
 
-
+    //CARGAMOS
     while(fgets(cad, sizeof(cad), ftexto))
     {
         sscanf(cad,
@@ -143,7 +151,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     if (!planValido(miembro->plan))
         return 8; //error PLAN
 
-    if(strcmp(miembro->email,"")!=EXITO  && !strcmpi(miembro->cat,"MENOR"))
+    if(strcmp(miembro->email,"")!= 0  && !strcmpi(miembro->cat,"MENOR"))
     {
         if (validarEmail(miembro->email))
             return 9; // error MAIL
@@ -154,40 +162,6 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     return EXITO ;
 }
 
-//--------------------------------------------------------------------------------------
-//Cargar fecha proceso
-t_fecha ingresarFechaProceso()
-{
-    int valorFechaProc;
-    t_fecha fecha;
-    t_fecha *pf = &fecha;
-
-
-    printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
-
-    scanf(FORMATO_FECHA, &fecha.dia, &fecha.mes, &fecha.anio);
-
-    valorFechaProc = validarFecha(pf);   // pf es puntero válido
-
-
-
-    while (valorFechaProc == FALLA)
-
-    {
-
-        printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
-
-        fflush(stdin);
-
-        scanf(FORMATO_FECHA, &fecha.dia, &fecha.mes, &fecha.anio);
-
-        valorFechaProc = validarFecha(pf);
-
-    }
-    fflush(stdin);
-    // Devolvemos la estructura de fecha válida (por valor)
-    return fecha;
-}
 //--------------------------------------------------------------------------------------
 
 ///Validaciones Campos
@@ -365,9 +339,9 @@ void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo)
         return ; // La subcarpeta no existe o no se puede leer
     }
 
-    while ((dir = readdir(d)) != NULL && flag==EXITO)
+    while ((dir = readdir(d)) != NULL && flag==0)
     {
-        if (strcmp(dir->d_name, ".") != EXITO && strcmp(dir->d_name, "..") != EXITO)
+        if (strcmp(dir->d_name, ".") != 0 && strcmp(dir->d_name, "..") != 0)
         {
             strcpy(nombreArchivo, dir->d_name);
             flag=1; //FALLA?
@@ -412,7 +386,7 @@ int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const
         strcat(nombreArchivoBinario,".dat");
 
         printf("\n- Nombre viejo:%s \n- Nombre nuevo: %s\n\n",aux_nombre,nombreArchivoBinario);
-        if ((rename(aux_nombre,nombreArchivoBinario)) == EXITO)
+        if ((rename(aux_nombre,nombreArchivoBinario)) == 0)
         {
             printf("Archivo renombrado exitosamente!\n\n");
         }
