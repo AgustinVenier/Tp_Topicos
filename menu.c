@@ -1,32 +1,15 @@
 #include "functions.h"
 #include "indice.h"
-/*
-#include <stdlib.h>
-#include <unistd.h>
-*/
-void mostrarIndice(t_indice *indice) /// BORRAR PAR ENTREGAR SOLO ES TEST
-{
-    int i;
-    t_reg_indice *registros = (t_reg_indice *)indice->vindice;
-    printf("---------INDICE--------\n");
-    for (i=0; i< indice->cantidad_elementos_actual; i++)
-    {
-        printf(" DNI: %ld , REG: %d \n",registros[i].dni,registros[i].nro_reg);
-    }
-    return;
-}
-
 
 void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 {
     char op;
-    int resultado; // Para guardar el valor devuelto por cada operación
+    int resultado;
     do{
 
         printf("\n");
 
-        system("cls");
-        mostrarIndice(ind);
+
         op = mostrarMenu(
                  "a. Alta\n"
                  "b. Baja\n"
@@ -46,6 +29,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 else
                     printf("\nAlta realizada con exito.\n");
                 sleep(2);
+                system("cls");
                 break;
 
             case 'b':
@@ -55,6 +39,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 else
                     printf("\nBaja realizada con exito.\n");
                 sleep(2);
+                system("cls");
                 break;
 
             case 'c':
@@ -64,6 +49,7 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
                 else
                     printf("\nModificacion realizada con exito.\n");
                 sleep(2);
+                system("cls");
                 break;
 
             case 'd':
@@ -107,7 +93,6 @@ char mostrarMenu(const char *msj, const char *opc)
 {
     char opta;
     int priVez = 1;
-    system("cls");
     printf("\n===================================================\n");
     printf("              GESTION DE MIEMBROS\n");
     printf("===================================================\n");
@@ -118,7 +103,7 @@ char mostrarMenu(const char *msj, const char *opc)
                priVez ? priVez = 0, "" : "ERROR - Opcion No valida\n",
                msj);
         printf("\nIngrese seleccion: ");
-        scanf(" %c", &opta);
+        scanf("%c", &opta);
     }while(strchr(opc, opta) == NULL);   //busca el carácter dentro del conjunto de válidos
     return opta;
 }
@@ -132,20 +117,14 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     FILE *pf = fopen(nombreArch, "r+b");
     if (!pf)
     {
-        // si no existe, crear nuevo archivo
-        pf = fopen(nombreArch, "w+b");
-        if (!pf)
-        {
-            printf("No se pudo abrir el archivo");
-            return ERROR;
-        }
+        printf("No se pudo abrir el archivo");
+        return ERROR;
     }
     // Calculo la posición física en el archivo
     fseek(pf, 0, SEEK_END);
     unsigned nro_reg = ftell(pf) / sizeof(t_miembro);
 
     // Ingreso datos del nuevo miembro
-    fflush(stdin);
     printf("\n\nIngrese DNI: ");
     scanf("%ld", &m.dni);
     fflush(stdin);
@@ -159,6 +138,10 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         fclose(pf);
         return ERROR;
     }
+
+    //inicializar lo que falta de t_reg
+    reg.nro_reg = nro_reg;
+
     //Ingreso del resto de los datos
     printf("Ingrese Apellido y Nombre: ");
     fgets(m.nya, sizeof(m.nya), stdin);
@@ -184,20 +167,20 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     scanf("%d/%d/%d", &m.fecha_cuota.dia, &m.fecha_cuota.mes, &m.fecha_cuota.anio);
     fflush(stdin);
 
-    printf("Ingrese estado (A/B): ");
-    scanf(" %c", &m.estado);
-    fflush(stdin);
+    m.estado='A';
 
     printf("Ingrese plan (BASIC/PREMIUM/VIP/FAMILY): ");
     fgets(m.plan, sizeof(m.plan), stdin);
     eliminarFinDeLinea(m.plan);
 
-    printf("Ingrese email: ");
-    fgets(m.email, sizeof(m.email), stdin);
-    eliminarFinDeLinea(m.email);
+    if(strcmpi(m.cat,"MENOR")== 0){
+        printf("Ingrese email: ");
+        fgets(m.email, sizeof(m.email), stdin);
+        eliminarFinDeLinea(m.email);
+    }
 
     // Valido los campos del miembro
-    if (toupper(m.estado)=='B' || validaciones(&m, fecha) != EXITO)
+    if (validaciones(&m, fecha) != OK)
     {
         printf("Registro invalido según validaciones. Alta cancelada.\n");
         fclose(pf);
@@ -209,12 +192,13 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     fwrite(&m, sizeof(t_miembro), 1, pf);
     fflush(pf);
 
-    // Insertar en el  índice:
-    reg.dni = m.dni;
-    reg.nro_reg = nro_reg;
 
-    if(indice_insertar(ind, &reg, sizeof(t_reg_indice), cmp_por_dni) != OK)
+
+    // Insertar en el  índice:
+    if(indice_insertar(ind, &reg, sizeof(t_reg_indice), cmp_por_dni) != OK){
+        fclose(pf);
         return ERROR;
+    }
     else
         printf("Alta realizada. DNI=%ld, nro_reg=%u\n", reg.dni, reg.nro_reg);
     fclose(pf);
@@ -225,8 +209,10 @@ int Baja(const char *nombreArch, t_indice *ind)
 {
     int pos;
     t_miembro m;
-    t_reg_indice clave; //Estructura auxiliar para verificar
-
+    t_reg_indice clave;
+    t_reg_indice *vec;
+    FILE *pf;
+    unsigned nro_reg;
     // Solicito DNI y lo asigno a la clave
     printf("DNI a dar de baja: ");
     scanf("%ld", &m.dni);
@@ -239,10 +225,10 @@ int Baja(const char *nombreArch, t_indice *ind)
         return ERROR;
     }
     // Accede al vector de índices para obtener el número de registro físico
-    t_reg_indice *vec = (t_reg_indice*)ind->vindice;
-    unsigned nro_reg = vec[pos].nro_reg;
+    vec = (t_reg_indice*)ind->vindice;
+    nro_reg = (vec+pos)->nro_reg;
 
-    FILE *pf = fopen(nombreArch, "r+b");
+    pf = fopen(nombreArch, "r+b");
     if (!pf)
     {
         printf("No se pudo abrir el archivo");
@@ -252,21 +238,14 @@ int Baja(const char *nombreArch, t_indice *ind)
     fseek(pf, nro_reg * sizeof(t_miembro), SEEK_SET);
     fread(&m, sizeof(t_miembro), 1, pf);
 
-    if (m.estado == 'B') /// esto no deberia pasar xq si esta dado de baja no esta en el vector indice
-    {
-        printf("El registro ya esta dado de baja.\n");
-        fclose(pf);
-        indice_eliminar(ind, &clave, sizeof(t_reg_indice), cmp_por_dni);
-        return OK;
-    }
-
     m.estado = 'B';
-    fseek(pf, nro_reg * sizeof(t_miembro), SEEK_SET);
+    fseek(pf, (long)-sizeof(t_miembro), SEEK_CUR);
     fwrite(&m, sizeof(t_miembro), 1, pf);
-    fflush(pf);
 
-    indice_eliminar(ind, &clave, sizeof(t_reg_indice), cmp_por_dni);
     fclose(pf);
+    if(indice_eliminar(ind, &clave, sizeof(t_reg_indice), cmp_por_dni)==ERROR){
+        return ERROR;
+    }
     return OK;
 }
 
@@ -275,6 +254,9 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     t_miembro m;
     t_reg_indice clave;
     char aux;
+    FILE *pf;
+    int pos;
+    t_reg_indice *vec;
 
     printf("\n=== MODIFICACION DE MIEMBRO ===\n");
     printf("Ingrese DNI a modificar: ");
@@ -282,23 +264,23 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     getchar();
     clave.dni = m.dni;
 
-    int pos = indice_buscar(ind, &clave, ind->cantidad_elementos_actual, sizeof(t_reg_indice), cmp_por_dni);
+    pos = indice_buscar(ind, &clave, ind->cantidad_elementos_actual, sizeof(t_reg_indice), cmp_por_dni);
     if(pos == NO_EXISTE)
     {
         printf("No se encontro el DNI.\n");
         return ERROR;
     }
 
-    FILE *pf = fopen(nombreArch, "r+b");
+    pf = fopen(nombreArch, "r+b");
     if(!pf)
     {
         printf("\nError al abrir archivo binario");
         return ERROR;
     }
-    t_reg_indice *vec = (t_reg_indice *)ind->vindice; //casteo
+    vec = (t_reg_indice *)ind->vindice; //casteo
 
     // Posiciona el puntero en el registro correspondiente y lo lee
-    fseek(pf, vec[pos].nro_reg * sizeof(t_miembro), SEEK_SET);
+    fseek(pf, (vec+pos)->nro_reg * sizeof(t_miembro), SEEK_SET);
     fread(&m, sizeof(t_miembro), 1, pf);
 
     printf("Modificando a: %s\n", m.nya);
@@ -330,7 +312,7 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     preguntarCambio("fecha de afiliacion(DD/MM/AAAA): ", &aux);
     if(toupper(aux) == 'S')
     {
-        printf("Nueva Fecha de afiliación: ");
+        printf("Nueva Fecha de afiliacion: ");
         scanf("%d/%d/%d", &m.fecha_afi.dia, &m.fecha_afi.mes, &m.fecha_afi.anio);
         fflush(stdin);
     }
@@ -359,23 +341,24 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         eliminarFinDeLinea(m.plan);
     }
 
-    preguntarCambio("email", &aux);
-    if(toupper(aux) == 'S')
-    {
-        printf("Nuevo email: ");
-        fgets(m.email, sizeof(m.email), stdin);
-        eliminarFinDeLinea(m.email);
+    if(strcmpi(m.cat,"MENOR")==0){
+        preguntarCambio("email", &aux);
+        if(toupper(aux) == 'S')
+        {
+            printf("Nuevo email: ");
+            fgets(m.email, sizeof(m.email), stdin);
+            eliminarFinDeLinea(m.email);
+        }
     }
 
-    if(validaciones(&m, fecha) != EXITO)
+    if(validaciones(&m, fecha) != OK)
     {
         fclose(pf);
         return ERROR;
     }
     // Valida los datos modificados con la fecha actual
-    fseek(pf, vec[pos].nro_reg * sizeof(t_miembro), SEEK_SET);
+    fseek(pf, (vec+pos)->nro_reg * sizeof(t_miembro), SEEK_SET);
     fwrite(&m, sizeof(t_miembro), 1, pf);
-    fflush(pf);
     fclose(pf);
     return OK;
 }
@@ -384,6 +367,9 @@ int MostrarInfoMiembro(const char *nombreArch, t_indice *ind)
 {
     t_miembro m;
     t_reg_indice clave;
+    int pos;
+    FILE *pf;
+    t_reg_indice *vec;
 
     printf("\n============= INFORMACION DE MIEMBRO =============\n");
     printf("Ingrese DNI a visualizar: ");
@@ -391,22 +377,22 @@ int MostrarInfoMiembro(const char *nombreArch, t_indice *ind)
     getchar();
     clave.dni = m.dni;
 
-    int pos = indice_buscar(ind, &clave, ind->cantidad_elementos_actual, sizeof(t_reg_indice), cmp_por_dni);
+    pos = indice_buscar(ind, &clave, ind->cantidad_elementos_actual, sizeof(t_reg_indice), cmp_por_dni);
     if(pos == NO_EXISTE)
     {
         printf("No se encontro el DNI.\n");
         return ERROR;
     }
 
-    FILE *pf = fopen(nombreArch, "rb");
+    pf = fopen(nombreArch, "rb");
     if(!pf)
     {
         printf("\nError al abrir archivo binario");
         return ERROR;
     }
 
-    t_reg_indice *vec = (t_reg_indice *)ind->vindice;
-    fseek(pf, vec[pos].nro_reg * sizeof(t_miembro), SEEK_SET);
+    vec = (t_reg_indice *)ind->vindice;
+    fseek(pf, (vec+pos)->nro_reg * sizeof(t_miembro), SEEK_SET);
     fread(&m, sizeof(t_miembro), 1, pf);
 
     printf("\nDNI: %ld\nNombre: %s\nSexo: %c\nCategoria: %s\nPlan: %s\nEmail: %s\nEstado: %c\n", m.dni, m.nya, m.sexo, m.cat, m.plan, m.email, m.estado);
@@ -418,7 +404,10 @@ int ListadoXDNI(const char *nombreArch, t_indice *ind)
 {
     int i;
     t_miembro m;
-    FILE *pf = fopen(nombreArch, "rb");
+    FILE *pf;
+    t_reg_indice *vecOrig;
+
+    pf = fopen(nombreArch, "rb");
     if(!pf)
     {
         printf("\nError al abrir archivo binario");
@@ -433,7 +422,7 @@ int ListadoXDNI(const char *nombreArch, t_indice *ind)
     }
 
     // Castear el índice original
-    t_reg_indice *vecOrig = (t_reg_indice *)ind->vindice;
+    vecOrig = (t_reg_indice *)ind->vindice;
 
 
     printf("\n\n=====================================================================================================================================================================================\n");
@@ -455,7 +444,11 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
     int i, n;
     char planes[4][10]= {"BASIC","PREMIUM","VIP","FAMILY"};
     t_miembro aux;
-    FILE *pf = fopen(nombreArch, "rb");
+    FILE *pf;
+    t_reg_indice *vecInd;
+
+
+    pf = fopen(nombreArch, "rb");
     if (!pf)
     {
         printf("\nError al abrir archivo binario");
@@ -469,7 +462,7 @@ int ListadoXPlan(const char *nombreArch, t_indice *ind)
         return ERROR;
     }
 
-    t_reg_indice *vecInd = (t_reg_indice *)ind->vindice;    // Casteo el vector del índice al tipo correcto
+    vecInd = (t_reg_indice *)ind->vindice;
 
     for(i=0; i<4; i++)
     {

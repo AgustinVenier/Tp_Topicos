@@ -85,3 +85,31 @@
 	<stdlib.h>
 	<unistd.h>
 
+1761354738 source:c:\users\nikob\desktop\importante\facultad\topicos2\tp_topicos-5\functions.c
+	"functions.h"
+
+1761354443 c:\users\nikob\desktop\importante\facultad\topicos2\tp_topicos-5\functions.h
+	<stdio.h>
+	<stdlib.h>
+	<ctype.h>
+	<string.h>
+	<dirent.h>
+	<unistd.h>
+	"indice.h"
+
+1761354791 c:\users\nikob\desktop\importante\facultad\topicos2\tp_topicos-5\indice.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1761354765 source:c:\users\nikob\desktop\importante\facultad\topicos2\tp_topicos-5\indice.c
+	"indice.h"
+	"functions.h"
+
+1761354805 source:c:\users\nikob\desktop\importante\facultad\topicos2\tp_topicos-5\main.c
+	"functions.h"
+
+1761354640 source:c:\users\nikob\desktop\importante\facultad\topicos2\tp_topicos-5\menu.c
+	"functions.h"
+	"indice.h"
+

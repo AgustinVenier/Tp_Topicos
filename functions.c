@@ -17,7 +17,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     if (ftexto == NULL)
     {
         printf("Error al abrir un archivo texto");
-        return FALLA;
+        return ERROR;
     }
 
     ferror = fopen(nombreArchivoError, "wt");
@@ -25,7 +25,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     {
         printf("Error al abrir un archivo error");
         fclose(ftexto);
-        return FALLA;
+        return ERROR;
     }
 
     fbin = fopen(nombreArchivoBin, "wb");
@@ -34,7 +34,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
         printf("Error al abrir un archivo binario");
         fclose(ftexto);
         fclose(ferror);
-        return FALLA;
+        return ERROR;
     }
 
     //CARGAMOS
@@ -54,7 +54,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
         auxReg.dni=miembro->dni;
         auxReg.nro_reg=contador;
 
-        if(valor == EXITO)
+        if(valor == OK)
         {
             if(toupper(miembro->estado)=='A')
                 seInserta=indice_insertar(indice,&auxReg,sizeof(t_reg_indice),cmp);
@@ -64,7 +64,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
             if(seInserta==OK)
             {
                 contador++;
-                fwrite(miembro, sizeof(t_miembro), 1, fbin); ///revisar
+                fwrite(miembro, sizeof(t_miembro), 1, fbin);
             }
             else
             {
@@ -73,13 +73,12 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
                     fwrite(miembro, sizeof(t_miembro), 1, fbin);
                     contador++;
                 }
-
                 else
                     valor=10;
             }
         }
 
-        if(valor != EXITO)
+        if(valor != OK)
         {
             switch (valor)
             {
@@ -121,7 +120,7 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     fclose(ftexto);
     fclose(fbin);
     fclose(ferror);
-    return EXITO;
+    return OK;
 }
 
 //--------------------------------------------------------------------------------------
@@ -140,7 +139,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     if (!sexValido(miembro->sexo))
         return 3; //error SEXO
 
-    if (fAfiliacionValido(&miembro->fecha_afi,f_proceso,&miembro->fecha_nac)==FALLA)
+    if (fAfiliacionValido(&miembro->fecha_afi,f_proceso,&miembro->fecha_nac)==ERROR)
         return 4; // error F AFILIACION
 
     if (validarFechaCategoria(miembro->cat,&miembro->fecha_nac,f_proceso))
@@ -163,7 +162,7 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     else
         strcpy(miembro->email,"");
 
-    return EXITO ;
+    return OK ;
 }
 
 //--------------------------------------------------------------------------------------
@@ -175,15 +174,15 @@ t_fecha ingresarFechaProceso()
     t_fecha *pf = &fecha;
 
     printf("Ingrese la fecha del proceso (DD/MM/AAAA): ");
-    scanf(FORMATO_FECHA, &fecha.dia, &fecha.mes, &fecha.anio);
+    scanf("%d/%d/%d", &fecha.dia, &fecha.mes, &fecha.anio);
     valorFechaProc = validarFecha(pf);
 
-    while (valorFechaProc == FALLA)
+    while (valorFechaProc == ERROR)
 
     {
         printf("Ingrese la fecha nuevamente (DD/MM/AAAA): ");
         fflush(stdin);
-        scanf(FORMATO_FECHA, &fecha.dia, &fecha.mes, &fecha.anio);
+        scanf("%d/%d/%d", &fecha.dia, &fecha.mes, &fecha.anio);
         valorFechaProc = validarFecha(pf);
 
     }
@@ -211,7 +210,7 @@ int validarFecha(const t_fecha* f)
 
     if (f->mes < 1 || f->mes > 12)
     {
-        return FALLA;
+        return ERROR;
     }
 
     if (f->mes == 1 || f->mes == 3 || f->mes == 5 || f->mes == 7 || f->mes == 8 || f->mes == 10 || f->mes == 12)
@@ -231,14 +230,14 @@ int validarFecha(const t_fecha* f)
 
     if (f->dia < 1 || f->dia > diasEnMes)
     {
-        return FALLA;
+        return ERROR;
     }
 
     if (f->anio < 1)
     {
-        return FALLA;
+        return ERROR;
     }
-    return EXITO;
+    return OK;
 }
 
 int validarFechaNacimiento(const t_fecha* nacimiento,const t_fecha * t_proceso,int cant_anios) // retorna 0 si es mayor a cant_anios, 1 si es menor, segun cuanto paso desde nacimiento hasta proceso
@@ -265,18 +264,18 @@ void normalizar(char * cad)
             lect++;
         if (*lect)
         {
-            primeraLetraPalabra = FALLA;
+            primeraLetraPalabra = 1;
             while (*lect && !isspace(*lect) && *lect!=',')
             {
                 *esc = primeraLetraPalabra ? toupper(*lect) : tolower(*lect);
-                primeraLetraPalabra = EXITO;
+                primeraLetraPalabra = 0;
                 esc++;
                 lect++;
             }
             if(!primeraPalabra)
             {
                 *esc++ = ',';
-                primeraPalabra=FALLA;
+                primeraPalabra=1;
             }
             *esc++ = ' ';
         }
@@ -289,66 +288,66 @@ int validarEmail(char *cad)
 {
     char* pc=cad;
     if(strcmp(pc,"")==0)
-        return FALLA;
+        return ERROR;
     pc=strchr(pc,'@');
 
     if(pc!=NULL && isalnum(*(pc-1)) && isalpha(*(pc+1)))
     {
         pc=strrchr(pc,'.');
         if(pc!=NULL && isalpha(*(pc-1)) && isalpha(*(pc+1)))
-            return EXITO;
+            return OK;
     }
-    return FALLA;
+    return ERROR;
 }
 
 int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f_proceso)
 {
     if(validarFechaNacimiento(fechaNac,f_proceso,18))
     {
-        if(strcmpi(categ, "MENOR") == EXITO)
-            return EXITO;
+        if(strcmpi(categ, "MENOR") == 0)
+            return OK;
         else
-            return FALLA;
+            return ERROR;
     }
-    if(strcmpi(categ, "ADULTO") == EXITO)
-        return EXITO;
-    return FALLA;
+    if(strcmpi(categ, "ADULTO") == 0)
+        return OK;
+    return ERROR;
 }
 
 int fNacValido(const t_fecha* fechaNac,const t_fecha * f_proceso)
 {
-    if (validarFecha(fechaNac) == FALLA)
-        return FALLA;
+    if (validarFecha(fechaNac) == ERROR)
+        return ERROR;
 
-    if (validarFechaNacimiento(fechaNac,f_proceso,ANIOS_DESDE_NACIMIENTO) == FALLA)
-        return FALLA;
+    if (validarFechaNacimiento(fechaNac,f_proceso,ANIOS_DESDE_NACIMIENTO) == ERROR)
+        return ERROR;
 
-    return EXITO;
+    return OK;
 }
 
 int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t_fecha* fechaNac)
 {
-    if (validarFecha(fechaAfi) == FALLA)
-        return FALLA;
+    if (validarFecha(fechaAfi) == ERROR)
+        return ERROR;
 
     if (compararFecha(fechaAfi, fechaProc) > 0) // afiliación > proceso // creo que el problema esta en esta linea
-        return FALLA;
+        return ERROR;
 
     if (compararFecha(fechaAfi, fechaNac) <= 0) // afiliación <= nacimiento
-        return FALLA;
+        return ERROR;
 
-    return EXITO;
+    return OK;
 }
 
 int fUltCoutaValido(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc)
 {
-    if (compararFecha(fechaCuota, fechaAfi) <= EXITO) // cuota <= afiliación
-        return FALLA;
+    if (compararFecha(fechaCuota, fechaAfi) <= 0) // cuota <= afiliación
+        return ERROR;
 
-    if (compararFecha(fechaCuota, fechaProc) > EXITO) // cuota > proceso
-        return FALLA;
+    if (compararFecha(fechaCuota, fechaProc) > 0) // cuota > proceso
+        return ERROR;
 
-    return EXITO;
+    return OK;
 }
 
 //----------------------------------------------------------------------------------------------
@@ -400,7 +399,7 @@ int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const
         strcat(nombreArchivoError,aux_fecha);
         strcat(nombreArchivoError,".txt");
 
-        return FALLA; // Procesar
+        return ERROR; // Procesar
     }
     else
     {
@@ -414,7 +413,6 @@ int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const
         strcat(nombreArchivoBinario,".dat");
 
         printf("Recuperando desde: %s\nLuego de finalizar se guardara con el nombre: %s\n",nombreArchivoBinario,aux_nombre);
-        //printf("\n- Nombre viejo:%s \n- Nombre nuevo: %s\n\n",aux_nombre);
         if ((rename(aux_nombre,nombreArchivoBinario)) == 0)
         {
             printf("Archivo renombrado exitosamente!\n\n");
@@ -423,7 +421,7 @@ int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const
         {
             perror("Error al renombrar el archivo");
         }
-        return EXITO; // Recuperar
+        return OK; // Recuperar
     }
 }
 

@@ -8,15 +8,12 @@
 #include <unistd.h> // Para sleep
 #include "indice.h"
 
-#define EXITO 0
-#define FALLA 1
 #define BUFFER 250
-#define FORMATO_FECHA "%d/%d/%d"
 #define ANIOS_DESDE_NACIMIENTO 10
 #define dniValido(a) (1000000<(a)&&(a)<100000000)
 #define sexValido(a) (toupper(a)=='F'||toupper(a)=='M')
 #define estadoValido(a) (toupper(a)=='A'||toupper(a)=='B')
-#define planValido(a) ((strcmpi((a),"BASIC")==0)||(strcmpi((a),"PREMIUM")==0)||(strcmpi((a),"VIP")==0)||(strcmpi((a),"FAMILY")==0)) // no es sensible mayus/minus
+#define planValido(a) ((strcmpi((a),"BASIC")==0)||(strcmpi((a),"PREMIUM")==0)||(strcmpi((a),"VIP")==0)||(strcmpi((a),"FAMILY")==0))
 
 
 typedef struct
@@ -26,16 +23,16 @@ typedef struct
 
 typedef struct
 {
-    long dni; //1000000< DNI <100000000
-    char nya[61];
-    t_fecha fecha_nac; //Validacion formal y < fecha de proceso // 10 anios
-    char sexo; //'F' | 'M'
-    t_fecha fecha_afi; //Validacion formal, <= fecha de proceso y > fecha nacimiento
-    char cat[11]; //MENOR, menor de 18 anios |ADULTO�, mayor de 18 anios.
-    t_fecha fecha_cuota; //> fecha de afiliacion y <= fecha de proceso.
-    char estado;// 'A'(ALTA) o 'B'(BAJA)
-    char plan[10]; //'BASIC'-'PREMIUM'-'VIP'-'FAMILY'
-    char email[30]; //si es menor de edad, debera tener un email asociado. Validar formato del email.
+    long dni;
+    char nya[60];
+    t_fecha fecha_nac;
+    char sexo;
+    t_fecha fecha_afi;
+    char cat[10];
+    t_fecha fecha_cuota;
+    char estado;
+    char plan[10];
+    char email[30];
 } t_miembro;
 
 //Procesar Archivo Texto
@@ -50,7 +47,7 @@ t_fecha ingresarFechaProceso();
 //Validaciones Campos
 int validarFecha(const t_fecha* f);
 int compararFecha(const t_fecha* fecha_1,const t_fecha* fecha_2);
-void normalizar(char * cad); //normalizar cadena
+void normalizar(char * cad);
 int validarFechaNacimiento(const t_fecha* nacimiento,const t_fecha * t_proceso,int cant_anios);
 int validarEmail(char *cad);
 int validarFechaCategoria(char * categ,const t_fecha* fechaNac,const t_fecha * f_proceso);
@@ -61,8 +58,6 @@ int fUltCoutaValido(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_
 //Directorios Archivos
 void LeeSubCarpeta (char* subCarpeta,char* nombreArchivo); //devuelve el nombre de  un archivo de esa subcarpeta
 int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const char *subcarpeta_binario,const char *subcarpeta_error,const t_fecha *pf); //crea los nombres de los archivos segun fecha proceso
-
-void mostrarMiembros(const char *nombreArch); /// BORRAR PAR ENTREGAR SOLO ES TEST
 
 //Funciones Segunda Parte
 void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha);

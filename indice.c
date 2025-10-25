@@ -37,14 +37,6 @@ int indice_insertar (t_indice *indice, const void *registro, size_t tamanyo,
     {
         indice_redimensionar(indice,indice->cantidad_elementos_maxima,tamanyo);
     }
-   /*int i = indice->cantidad_elementos_actual - 1;
-    while (i >= 0 && cmp(base + i * tamanyo, registro) > 0)
-    {
-        // Desplazar a la derecha
-        memcpy(base + (i + 1) * tamanyo, base + i * tamanyo, tamanyo);
-        i--;
-    }
-    memcpy(base + (i + 1) * tamanyo, registro, tamanyo);*/   //← vuela??
 
     memcpy(base + indice->cantidad_elementos_actual * tamanyo, registro, tamanyo);
     indice->cantidad_elementos_actual+=1;
@@ -165,18 +157,3 @@ int busquedaBinaria(const void *vec, const void *buscado, unsigned cantelem, siz
     }
     return NO_EXISTE;
 }
-
-///FUNCION GENERICA
-//int indice_cargar(const char* path, t_indice* indice, void *vreg_ind, size_t tamanyo,
-//                  int (*cmp)(const void *, const void *))
-//{
-//    FILE *fp = fopen(path, "rb");
-//    if(!fp)
-//        return ERROR;
-//
-//    while(fread(vreg_ind, tamanyo, 1, fp) == 1)
-//        indice_insertar(indice, vreg_ind, tamanyo, cmp);
-//
-//    fclose(fp);
-//    return OK;
-//}

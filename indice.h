@@ -25,7 +25,6 @@ typedef struct
     unsigned cantidad_elementos_maxima;
 } t_indice;
 
-void mostrarIndice(t_indice *ind); /// BORRAR PAR ENTREGAR SOLO ES TEST
 
 //TDA Indice
 void indice_crear(t_indice *indice, size_t nmemb, size_t tamanyo);
@@ -55,7 +54,5 @@ int cmp_por_dni(const void *a, const void *b);
 
 int busquedaBinaria(const void *vec,const void *buscado, unsigned cantelem, size_t tamanyo, int(*cmp)(const void *, const void*));
 
-/*void ordenamientoBurbujeo(void *vec, unsigned nmemb, size_t tamanyo, int (*cmp)(const void *, const void *));
-//void intercambio(void *a, void *b, size_t tamanyo);*/   ///se sacan?
 
 #endif // INDICE_H_INCLUDED
