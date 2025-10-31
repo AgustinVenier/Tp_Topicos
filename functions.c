@@ -2,13 +2,11 @@
 //Procesar archivo
 int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char * nombreArchivoError,const t_fecha* f_proceso,t_indice * indice,int (*cmp)(const void *, const void *))
 {
-    char cad[BUFFER],aux[BUFFER+30];
+    char cad[BUFFER],aux[BUFFER+30],*ptr_fin;
     t_miembro m1;
     t_miembro *miembro = &m1;
     t_reg_indice auxReg;
-    int valor;
-    int seInserta;
-    int contador=0;
+    int valor,seInserta,contador=0;
     FILE* fbin;
     FILE* ftexto;
     FILE* ferror;
@@ -38,10 +36,17 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     }
 
     //CARGAMOS
+
     while(fgets(cad, sizeof(cad), ftexto))
     {
+
+        ptr_fin= strpbrk(cad, "\r\n");
+        if (ptr_fin) {
+            *ptr_fin = '\0'; // Reemplaza el salto de línea por fin de string
+        }
+        *(miembro->email) = '\0';
         sscanf(cad,
-               "%ld|%60[^|]|%d/%d/%d|%c|%d/%d/%d|%10[^|]|%d/%d/%d|%c|%9[^|]|%29[^\n]", // Lee archivo de texto separado por comas, y el string de nya dentro de comillas dobles.
+               "%ld|%60[^|]|%d/%d/%d|%c|%d/%d/%d|%10[^|]|%d/%d/%d|%c|%9[^|]|%29[^\0]",
                &miembro->dni,miembro->nya, &miembro->fecha_nac.dia, &miembro->fecha_nac.mes,
                &miembro->fecha_nac.anio, &miembro->sexo, &miembro->fecha_afi.dia, &miembro->fecha_afi.mes,
                &miembro->fecha_afi.anio, miembro->cat, &miembro->fecha_cuota.dia, &miembro->fecha_cuota.mes,
@@ -81,41 +86,41 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
             switch (valor)
             {
                 case 1:
-                    strcpy(aux,"\"Error en campo DNI\",");
+                    strcpy(aux,"|Error en campo DNI");
                     break;
                 case 2:
-                    strcpy(aux,"\"Error en campo F NACIMIENTO\",");
+                    strcpy(aux,"|Error en campo F NACIMIENTO");
                     break;
                 case 3:
-                    strcpy(aux,"\"Error en campo SEXO\",");
+                    strcpy(aux,"|Error en campo SEXO");
                     break;
                 case 4:
-                    strcpy(aux,"\"Error en campo F AFILIACION\",");
+                    strcpy(aux,"|Error en campo F AFILIACION");
                     break;
                 case 5:
-                    strcpy(aux,"\"Error en campo CATEGORIA\",");
+                    strcpy(aux,"|Error en campo CATEGORIA");
                     break;
                 case 6:
-                    strcpy(aux,"\"Error en campo F ULT COUTA VALIDA\",");
+                    strcpy(aux,"|Error en campo F ULT COUTA VALIDA");
                     break;
                 case 7:
-                    strcpy(aux,"\"Error en campo ESTADO\",");
+                    strcpy(aux,"|Error en campo ESTADO");
                     break;
                 case 8:
-                    strcpy(aux,"\"Error en campo PLAN\",");
+                    strcpy(aux,"|Error en campo PLAN");
                     break;
                 case 9:
-                    strcpy(aux,"\"Error en campo MAIL\",");
+                    strcpy(aux,"|Error en campo MAIL");
                     break;
                 case 10:
-                    strcpy(aux,"\"Error DNI DUPLICADO\",");
+                    strcpy(aux,"|Error DNI DUPLICADO");
                     break;
                 case 11:
-                    strcpy(aux,"\"Error en campo NOMBRE Y APELLIDO (demasiado largo)\",");
+                    strcpy(aux,"|Error en campo NOMBRE Y APELLIDO (demasiado largo)");
                     break;
             }
-            strcat(aux,cad);
-            fprintf(ferror, "%s", aux);
+            strcat(cad,aux);
+            fprintf(ferror, "%s\n",cad);
         }
     }
     fclose(ftexto);
@@ -158,13 +163,19 @@ int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
     if (!planValido(miembro->plan))
         return 8; //error PLAN
 
-    if(strcmp(miembro->email,"")!=0  && !strcmpi(miembro->cat,"MENOR"))
+    if(strcmp(miembro->email,"")!=0)
     {
-        if (validarEmail(miembro->email))
-            return 9; // error MAIL
+        if(strcmpi(miembro->cat,"MENOR")==0)
+        {
+            if (validarEmail(miembro->email))
+                return 9; // error MAIL validacion
+        }
+        else
+            return 9;// error MAIL (es mayor y tiene mail)
     }
-    else
-        strcpy(miembro->email,"");
+        else if(strcmpi(miembro->cat,"MENOR")==0)
+            return 9; // error MAIL (es menor y no tiene mail)
+
 
     return OK ;
 }
