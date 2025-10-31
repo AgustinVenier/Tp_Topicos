@@ -38,12 +38,10 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
     }
 
     //CARGAMOS
-
-
     while(fgets(cad, sizeof(cad), ftexto))
     {
         sscanf(cad,
-               "%ld,\"%[^\"]\",%d/%d/%d,%c,%d/%d/%d,%10[^,],%d/%d/%d,%c,%9[^,],%29s", // Lee archivo de texto separado por comas, y el string de nya dentro de comillas dobles.
+               "%ld|%60[^|]|%d/%d/%d|%c|%d/%d/%d|%10[^|]|%d/%d/%d|%c|%9[^|]|%29[^\n]", // Lee archivo de texto separado por comas, y el string de nya dentro de comillas dobles.
                &miembro->dni,miembro->nya, &miembro->fecha_nac.dia, &miembro->fecha_nac.mes,
                &miembro->fecha_nac.anio, &miembro->sexo, &miembro->fecha_afi.dia, &miembro->fecha_afi.mes,
                &miembro->fecha_afi.anio, miembro->cat, &miembro->fecha_cuota.dia, &miembro->fecha_cuota.mes,
@@ -112,6 +110,9 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
                 case 10:
                     strcpy(aux,"\"Error DNI DUPLICADO\",");
                     break;
+                case 11:
+                    strcpy(aux,"\"Error en campo NOMBRE Y APELLIDO (demasiado largo)\",");
+                    break;
             }
             strcat(aux,cad);
             fprintf(ferror, "%s", aux);
@@ -129,6 +130,9 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 int validaciones(t_miembro * miembro,const t_fecha* f_proceso)
 {
     normalizar(miembro->nya);
+
+    if (strlen(miembro->nya) > 59)
+        return 11;
 
     if (!dniValido(miembro->dni))
         return 1; //error en DNI
@@ -330,10 +334,10 @@ int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t
     if (validarFecha(fechaAfi) == ERROR)
         return ERROR;
 
-    if (compararFecha(fechaAfi, fechaProc) > 0) // afiliación > proceso // creo que el problema esta en esta linea
+    if (compararFecha(fechaAfi, fechaProc) > 0) // Afiliación no puede ser antes del nacimiento
         return ERROR;
 
-    if (compararFecha(fechaAfi, fechaNac) <= 0) // afiliación <= nacimiento
+    if (compararFecha(fechaAfi, fechaNac) < 0) // No puede afiliarse antes de nacer
         return ERROR;
 
     return OK;
@@ -341,10 +345,13 @@ int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t
 
 int fUltCoutaValido(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_fecha* fechaProc)
 {
-    if (compararFecha(fechaCuota, fechaAfi) <= 0) // cuota <= afiliación
+    if (validarFecha(fechaCuota) == ERROR)
         return ERROR;
-
-    if (compararFecha(fechaCuota, fechaProc) > 0) // cuota > proceso
+    // No puede ser antes de la afiliación
+    if (compararFecha(fechaCuota, fechaAfi) < 0)    // No puede ser antes de la afiliación
+        return ERROR;
+    // No puede ser después del proceso
+    if (compararFecha(fechaCuota, fechaProc) > 0)   // No puede ser después del proceso
         return ERROR;
 
     return OK;

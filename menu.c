@@ -173,7 +173,8 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     fgets(m.plan, sizeof(m.plan), stdin);
     eliminarFinDeLinea(m.plan);
 
-    if(strcmpi(m.cat,"MENOR")== 0){
+    if(strcmpi(m.cat,"MENOR")== 0)
+    {
         printf("Ingrese email: ");
         fgets(m.email, sizeof(m.email), stdin);
         eliminarFinDeLinea(m.email);
@@ -191,8 +192,6 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     fseek(pf, 0, SEEK_END);
     fwrite(&m, sizeof(t_miembro), 1, pf);
     fflush(pf);
-
-
 
     // Insertar en el  índice:
     if(indice_insertar(ind, &reg, sizeof(t_reg_indice), cmp_por_dni) != OK){
@@ -432,7 +431,7 @@ int ListadoXDNI(const char *nombreArch, t_indice *ind)
     {
         fseek(pf, (vecOrig+i)->nro_reg * sizeof(t_miembro), SEEK_SET);
         fread(&m, sizeof(t_miembro), 1, pf);
-        printf("-  DNI: %8ld  -  Nombre: %-20s  -  FNac: %02d/%02d/%04d  -  Sexo: %c  -  FAfi: %02d/%02d/%04d  -  Categoria: %-5s  -  FUltCuota: %02d/%02d/%04d  -  Plan: %-10s  -  Email: %s\n", m.dni, m.nya, m.fecha_nac.dia,
+        printf("-  DNI: %8ld  -  Nombre: %-60s  -  FNac: %02d/%02d/%04d  -  Sexo: %c  -  FAfi: %02d/%02d/%04d  -  Categoria: %-10s  -  FUltCuota: %02d/%02d/%04d  -  Plan: %-10s  -  Email: %s\n", m.dni, m.nya, m.fecha_nac.dia,
                 m.fecha_nac.mes, m.fecha_nac.anio, m.sexo, m.fecha_afi.dia,m.fecha_afi.mes, m.fecha_afi.anio, m.cat, m.fecha_cuota.dia, m.fecha_cuota.mes, m.fecha_cuota.anio, m.plan, m.email); ///IMPRIMIR MAS CAMPOS
     }
     fclose(pf);
