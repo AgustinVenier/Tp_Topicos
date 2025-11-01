@@ -430,7 +430,7 @@ int crearNombreArchivo(char *nombreArchivoBinario,char *nombreArchivoError,const
         strcat(nombreArchivoBinario,aux_fecha);
         strcat(nombreArchivoBinario,".dat");
 
-        printf("Recuperando desde: %s\nLuego de finalizar se guardara con el nombre: %s\n",nombreArchivoBinario,aux_nombre);
+        printf("Recuperando desde: %s\nLuego de finalizar se guardara con el nombre: %s\n",aux_nombre,nombreArchivoBinario);
         if ((rename(aux_nombre,nombreArchivoBinario)) == 0)
         {
             printf("Archivo renombrado exitosamente!\n\n");

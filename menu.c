@@ -5,7 +5,8 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
 {
     char op;
     int resultado;
-    do{
+    do
+    {
 
         printf("\n");
 
@@ -22,64 +23,65 @@ void menuMiembros(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
              );
         switch(op)
         {
-            case 'a':
-                resultado = Alta(nombreArch,ind, fecha);
-                if (resultado == ERROR)
-                    printf("\nError al dar de alta el miembro.\n");
-                else
-                    printf("\nAlta realizada con exito.\n");
-                sleep(2);
-                system("cls");
-                break;
+        case 'a':
+            resultado = Alta(nombreArch,ind, fecha);
+            if (resultado == ERROR)
+                printf("\nError al dar de alta el miembro.\n");
+            else
+                printf("\nAlta realizada con exito.\n");
+            sleep(2);
+            system("cls");
+            break;
 
-            case 'b':
-                resultado = Baja(nombreArch, ind);
-                if (resultado == ERROR)
-                    printf("\nError al dar la baja del miembro.\n");
-                else
-                    printf("\nBaja realizada con exito.\n");
-                sleep(2);
-                system("cls");
-                break;
+        case 'b':
+            resultado = Baja(nombreArch, ind);
+            if (resultado == ERROR)
+                printf("\nError al dar la baja del miembro.\n");
+            else
+                printf("\nBaja realizada con exito.\n");
+            sleep(2);
+            system("cls");
+            break;
 
-            case 'c':
-                resultado = Modificacion(nombreArch, ind, fecha);
-                if (resultado == ERROR)
-                    printf("\nError al modificar el miembro.\n");
-                else
-                    printf("\nModificacion realizada con exito.\n");
-                sleep(2);
-                system("cls");
-                break;
+        case 'c':
+            resultado = Modificacion(nombreArch, ind, fecha);
+            if (resultado == ERROR)
+                printf("\nError al modificar el miembro.\n");
+            else
+                printf("\nModificacion realizada con exito.\n");
+            sleep(2);
+            system("cls");
+            break;
 
-            case 'd':
-                resultado = MostrarInfoMiembro(nombreArch,ind);
-                if (resultado == ERROR)
-                    printf("\nError al mostrar\n");
-                else
-                    printf("\nRealizada con exito.\n");
-                system("pause");
-                break;
+        case 'd':
+            resultado = MostrarInfoMiembro(nombreArch,ind);
+            if (resultado == ERROR)
+                printf("\nError al mostrar\n");
+            else
+                printf("\nRealizada con exito.\n");
+            system("pause");
+            break;
 
-            case 'e':
-                resultado = ListadoXDNI(nombreArch, ind);
-                if (resultado == ERROR)
-                    printf("\nError al listar\n");
-                else
-                    printf("\nRealizada con exito.\n");
-                system("pause");
-                break;
+        case 'e':
+            resultado = ListadoXDNI(nombreArch, ind);
+            if (resultado == ERROR)
+                printf("\nError al listar\n");
+            else
+                printf("\nRealizada con exito.\n");
+            system("pause");
+            break;
 
-            case 'f':
-                resultado = ListadoXPlan(nombreArch, ind);
-                if (resultado == ERROR)
-                    printf("\nError al Listar\n");
-                else
-                    printf("\nRealizada con exito.\n");
-                system("pause");
-                break;
+        case 'f':
+            resultado = ListadoXPlan(nombreArch, ind);
+            if (resultado == ERROR)
+                printf("\nError al Listar\n");
+            else
+                printf("\nRealizada con exito.\n");
+            system("pause");
+            break;
         }
-    }while(op != 'g');
+    }
+    while(op != 'g');
 }
 
 void eliminarFinDeLinea(char *cad)
@@ -104,7 +106,8 @@ char mostrarMenu(const char *msj, const char *opc)
                msj);
         printf("\nIngrese seleccion: ");
         scanf("%c", &opta);
-    }while(strchr(opc, opta) == NULL);   //busca el carácter dentro del conjunto de válidos
+    }
+    while(strchr(opc, opta) == NULL);    //busca el carácter dentro del conjunto de válidos
     return opta;
 }
 
@@ -194,7 +197,8 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     fflush(pf);
 
     // Insertar en el  índice:
-    if(indice_insertar(ind, &reg, sizeof(t_reg_indice), cmp_por_dni) != OK){
+    if(indice_insertar(ind, &reg, sizeof(t_reg_indice), cmp_por_dni) != OK)
+    {
         fclose(pf);
         return ERROR;
     }
@@ -242,7 +246,8 @@ int Baja(const char *nombreArch, t_indice *ind)
     fwrite(&m, sizeof(t_miembro), 1, pf);
 
     fclose(pf);
-    if(indice_eliminar(ind, &clave, sizeof(t_reg_indice), cmp_por_dni)==ERROR){
+    if(indice_eliminar(ind, &clave, sizeof(t_reg_indice), cmp_por_dni)==ERROR)
+    {
         return ERROR;
     }
     return OK;
@@ -290,6 +295,7 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         printf("Nuevo apellido y nombre: ");
         fgets(m.nya, sizeof(m.nya), stdin);
         eliminarFinDeLinea(m.nya);
+        normalizar(m.nya);
     }
 
     preguntarCambio("fecha de nacimiento", &aux);
@@ -298,6 +304,13 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         printf("Nueva Fecha de Nacimiento(DD/MM/AAAA): ");
         scanf("%d/%d/%d", &m.fecha_nac.dia, &m.fecha_nac.mes, &m.fecha_nac.anio);
         fflush(stdin);
+        while(fNacValido(&m.fecha_nac,fecha))
+        {
+            printf("\n Ingreso Incorrecto\n");
+            printf("Nueva Fecha de Nacimiento(DD/MM/AAAA): ");
+            scanf("%d/%d/%d", &m.fecha_nac.dia, &m.fecha_nac.mes, &m.fecha_nac.anio);
+            fflush(stdin);
+        }
     }
 
     preguntarCambio("sexo", &aux);
@@ -306,30 +319,58 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         printf("Nuevo sexo: ");
         scanf("%c", &m.sexo);
         fflush(stdin);
+        while(!sexValido(m.sexo))
+        {
+            printf("\n Ingreso Incorrecto\n");
+            printf("Nuevo sexo: ");
+            scanf("%c", &m.sexo);
+            fflush(stdin);
+        }
     }
 
-    preguntarCambio("fecha de afiliacion(DD/MM/AAAA): ", &aux);
+    preguntarCambio("fecha de afiliacion: ", &aux);
     if(toupper(aux) == 'S')
     {
-        printf("Nueva Fecha de afiliacion: ");
+        printf("Nueva Fecha de afiliacion (DD/MM/AAAA): ");
         scanf("%d/%d/%d", &m.fecha_afi.dia, &m.fecha_afi.mes, &m.fecha_afi.anio);
         fflush(stdin);
+        while(fAfiliacionValido(&m.fecha_afi,fecha,&m.fecha_nac)==ERROR)
+        {
+            printf("\n Ingreso Incorrecto\n");
+            printf("Nueva Fecha de afiliacion (DD/MM/AAAA): ");
+            scanf("%d/%d/%d", &m.fecha_afi.dia, &m.fecha_afi.mes, &m.fecha_afi.anio);
+            fflush(stdin);
+        }
     }
 
     preguntarCambio("categoria", &aux);
     if(toupper(aux) == 'S')
     {
-        printf("Nuevo categoria: ");
+        printf("Nueva categoria: ");
         fgets(m.cat, sizeof(m.cat), stdin);
         eliminarFinDeLinea(m.cat);
+        while(validarFechaCategoria(m.cat,&m.fecha_nac,fecha))
+        {
+            printf("\n Ingreso Incorrecto\n");
+            printf("Nueva categoria: ");
+            fgets(m.cat, sizeof(m.cat), stdin);
+            eliminarFinDeLinea(m.cat);
+        }
     }
 
-    preguntarCambio("fecha de ultima cuota(DD/MM/AAAA): ", &aux);
+    preguntarCambio("fecha de ultima cuota: ", &aux);
     if(toupper(aux) == 'S')
     {
-        printf("Nueva Fecha de ultima cuota: ");
+        printf("Nueva Fecha de ultima cuota (DD/MM/AAAA): ");
         scanf("%d/%d/%d", &m.fecha_cuota.dia, &m.fecha_cuota.mes, &m.fecha_cuota.anio);
         fflush(stdin);
+        while(fUltCoutaValido(&m.fecha_cuota,&m.fecha_afi,fecha))
+        {
+            printf("\n Ingreso Incorrecto\n");
+            printf("Nueva Fecha de ultima cuota (DD/MM/AAAA): ");
+            scanf("%d/%d/%d", &m.fecha_cuota.dia, &m.fecha_cuota.mes, &m.fecha_cuota.anio);
+            fflush(stdin);
+        }
     }
 
     preguntarCambio("plan", &aux);
@@ -338,24 +379,41 @@ int Modificacion(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         printf("Nuevo plan: ");
         fgets(m.plan, sizeof(m.plan), stdin);
         eliminarFinDeLinea(m.plan);
+        while(!planValido(m.plan))
+        {
+            printf("\n Ingreso Incorrecto\n");
+            printf("Nuevo plan: ");
+            fgets(m.plan, sizeof(m.plan), stdin);
+            eliminarFinDeLinea(m.plan);
+        }
     }
 
-    if(strcmpi(m.cat,"MENOR")==0){
+    if(strcmpi(m.cat,"MENOR")==0)
+    {
         preguntarCambio("email", &aux);
         if(toupper(aux) == 'S')
         {
             printf("Nuevo email: ");
             fgets(m.email, sizeof(m.email), stdin);
             eliminarFinDeLinea(m.email);
+            while(validarEmail(m.email))
+            {
+                printf("\n Ingreso Incorrecto\n");
+                printf("Nuevo email: ");
+                fgets(m.email, sizeof(m.email), stdin);
+                eliminarFinDeLinea(m.email);
+
+            }
         }
     }
-
+    /*
     if(validaciones(&m, fecha) != OK)
     {
         fclose(pf);
         return ERROR;
     }
     // Valida los datos modificados con la fecha actual
+    */
     fseek(pf, (vec+pos)->nro_reg * sizeof(t_miembro), SEEK_SET);
     fwrite(&m, sizeof(t_miembro), 1, pf);
     fclose(pf);
@@ -393,8 +451,8 @@ int MostrarInfoMiembro(const char *nombreArch, t_indice *ind)
     vec = (t_reg_indice *)ind->vindice;
     fseek(pf, (vec+pos)->nro_reg * sizeof(t_miembro), SEEK_SET);
     fread(&m, sizeof(t_miembro), 1, pf);
-
-    printf("\nDNI: %ld\nNombre: %s\nSexo: %c\nCategoria: %s\nPlan: %s\nEmail: %s\nEstado: %c\n", m.dni, m.nya, m.sexo, m.cat, m.plan, m.email, m.estado);
+    printf("-  DNI: %8ld  -  Nombre: %-60s  -  FNac: %02d/%02d/%04d  -  Sexo: %c  -  FAfi: %02d/%02d/%04d  -  Categoria: %-10s  -  FUltCuota: %02d/%02d/%04d  -  Plan: %-10s  -  Email: %s\n", m.dni, m.nya, m.fecha_nac.dia,
+           m.fecha_nac.mes, m.fecha_nac.anio, m.sexo, m.fecha_afi.dia,m.fecha_afi.mes, m.fecha_afi.anio, m.cat, m.fecha_cuota.dia, m.fecha_cuota.mes, m.fecha_cuota.anio, m.plan, m.email);
     fclose(pf);
     return OK;
 }
@@ -432,7 +490,7 @@ int ListadoXDNI(const char *nombreArch, t_indice *ind)
         fseek(pf, (vecOrig+i)->nro_reg * sizeof(t_miembro), SEEK_SET);
         fread(&m, sizeof(t_miembro), 1, pf);
         printf("-  DNI: %8ld  -  Nombre: %-60s  -  FNac: %02d/%02d/%04d  -  Sexo: %c  -  FAfi: %02d/%02d/%04d  -  Categoria: %-10s  -  FUltCuota: %02d/%02d/%04d  -  Plan: %-10s  -  Email: %s\n", m.dni, m.nya, m.fecha_nac.dia,
-                m.fecha_nac.mes, m.fecha_nac.anio, m.sexo, m.fecha_afi.dia,m.fecha_afi.mes, m.fecha_afi.anio, m.cat, m.fecha_cuota.dia, m.fecha_cuota.mes, m.fecha_cuota.anio, m.plan, m.email); ///IMPRIMIR MAS CAMPOS
+               m.fecha_nac.mes, m.fecha_nac.anio, m.sexo, m.fecha_afi.dia,m.fecha_afi.mes, m.fecha_afi.anio, m.cat, m.fecha_cuota.dia, m.fecha_cuota.mes, m.fecha_cuota.anio, m.plan, m.email); ///IMPRIMIR MAS CAMPOS
     }
     fclose(pf);
     return OK;
@@ -504,5 +562,6 @@ void preguntarCambio(const char * cad, char* aux)
         {
             printf("Opcion invalida, ingrese de nuevo: ");
         }
-    }while(toupper(*aux)!='S' && toupper(*aux)!='N');
+    }
+    while(toupper(*aux)!='S' && toupper(*aux)!='N');
 }
