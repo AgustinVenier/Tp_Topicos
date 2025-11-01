@@ -42,11 +42,11 @@ int pasajeTextoBinario(char * nombreArchivoTexto, char * nombreArchivoBin, char 
 
         ptr_fin= strpbrk(cad, "\r\n");
         if (ptr_fin) {
-            *ptr_fin = '\0'; // Reemplaza el salto de línea por fin de string
+            *ptr_fin = '\0';
         }
         *(miembro->email) = '\0';
         sscanf(cad,
-               "%ld|%60[^|]|%d/%d/%d|%c|%d/%d/%d|%10[^|]|%d/%d/%d|%c|%9[^|]|%29[^\0]",
+               "%ld|%60[^|]|%d/%d/%d|%c|%d/%d/%d|%10[^|]|%d/%d/%d|%c|%9[^|]|%29[^\n]",
                &miembro->dni,miembro->nya, &miembro->fecha_nac.dia, &miembro->fecha_nac.mes,
                &miembro->fecha_nac.anio, &miembro->sexo, &miembro->fecha_afi.dia, &miembro->fecha_afi.mes,
                &miembro->fecha_afi.anio, miembro->cat, &miembro->fecha_cuota.dia, &miembro->fecha_cuota.mes,
