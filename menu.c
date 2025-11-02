@@ -153,28 +153,70 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     printf("Ingrese sexo (M/F): ");
     scanf("%c", &m.sexo);
     fflush(stdin);
+    while(!sexValido(m.sexo))
+    {
+        printf("\n Ingreso Incorrecto\n");
+        printf("Nuevo sexo: ");
+        scanf("%c", &m.sexo);
+        fflush(stdin);
+    }
 
     printf("Ingrese fecha de nacimiento (dd/mm/aaaa): ");
     scanf("%d/%d/%d", &m.fecha_nac.dia, &m.fecha_nac.mes, &m.fecha_nac.anio);
     fflush(stdin);
+    while(fNacValido(&m.fecha_nac,fecha))
+    {
+        printf("\n Ingreso Incorrecto\n");
+        printf("Nueva Fecha de Nacimiento(DD/MM/AAAA): ");
+        scanf("%d/%d/%d", &m.fecha_nac.dia, &m.fecha_nac.mes, &m.fecha_nac.anio);
+        fflush(stdin);
+    }
 
     printf("Ingrese fecha de afiliacion (dd/mm/aaaa): ");
     scanf("%d/%d/%d", &m.fecha_afi.dia, &m.fecha_afi.mes, &m.fecha_afi.anio);
     fflush(stdin);
+    while(fAfiliacionValido(&m.fecha_afi,fecha,&m.fecha_nac)==ERROR)
+    {
+        printf("\n Ingreso Incorrecto\n");
+        printf("Nueva Fecha de afiliacion (DD/MM/AAAA): ");
+        scanf("%d/%d/%d", &m.fecha_afi.dia, &m.fecha_afi.mes, &m.fecha_afi.anio);
+        fflush(stdin);
+    }
 
     printf("Ingrese categoria (MENOR/ADULTO): ");
     fgets(m.cat, sizeof(m.cat), stdin);
     eliminarFinDeLinea(m.cat);
+    while(validarFechaCategoria(m.cat,&m.fecha_nac,fecha))
+    {
+        printf("\n Ingreso Incorrecto\n");
+        printf("Nueva categoria: ");
+        fgets(m.cat, sizeof(m.cat), stdin);
+        eliminarFinDeLinea(m.cat);
+    }
 
     printf("Ingrese fecha de ultima cuota paga (dd/mm/aaaa): ");
     scanf("%d/%d/%d", &m.fecha_cuota.dia, &m.fecha_cuota.mes, &m.fecha_cuota.anio);
     fflush(stdin);
+    while(fUltCoutaValido(&m.fecha_cuota,&m.fecha_afi,fecha))
+    {
+        printf("\n Ingreso Incorrecto\n");
+        printf("Nueva Fecha de ultima cuota (DD/MM/AAAA): ");
+        scanf("%d/%d/%d", &m.fecha_cuota.dia, &m.fecha_cuota.mes, &m.fecha_cuota.anio);
+        fflush(stdin);
+    }
 
     m.estado='A';
 
     printf("Ingrese plan (BASIC/PREMIUM/VIP/FAMILY): ");
     fgets(m.plan, sizeof(m.plan), stdin);
     eliminarFinDeLinea(m.plan);
+    while(!planValido(m.plan))
+    {
+        printf("\n Ingreso Incorrecto\n");
+        printf("Nuevo plan: ");
+        fgets(m.plan, sizeof(m.plan), stdin);
+        eliminarFinDeLinea(m.plan);
+    }
 
     if(strcmpi(m.cat,"MENOR")== 0)
     {

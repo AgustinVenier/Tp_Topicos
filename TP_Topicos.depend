@@ -14,25 +14,27 @@
 1761960613 source:c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\functions.c
 	"functions.h"
 
-1761188232 source:c:\users\agust\desktop\tp_topicos\tp_topicos\main.c
+1761951232 source:c:\users\agust\desktop\tp_topicos\tp_topicos\main.c
 	"functions.h"
 
-1761225391 c:\users\agust\desktop\tp_topicos\tp_topicos\functions.h
+1761951232 c:\users\agust\desktop\tp_topicos\tp_topicos\functions.h
 	<stdio.h>
+	<stdlib.h>
 	<ctype.h>
 	<string.h>
 	<dirent.h>
+	<unistd.h>
 	"indice.h"
 
-1761223790 source:c:\users\agust\desktop\tp_topicos\tp_topicos\functions.c
+1762096598 source:c:\users\agust\desktop\tp_topicos\tp_topicos\functions.c
 	"functions.h"
 
-1761185269 c:\users\agust\desktop\tp_topicos\tp_topicos\indice.h
-
-1761225165 source:c:\users\agust\desktop\tp_topicos\tp_topicos\indice.c
+1761951232 c:\users\agust\desktop\tp_topicos\tp_topicos\indice.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
+
+1761951232 source:c:\users\agust\desktop\tp_topicos\tp_topicos\indice.c
 	"indice.h"
 	"functions.h"
 
@@ -59,10 +61,9 @@
 1761271723 source:c:\users\camila navarro\tp_topicos\main.c
 	"functions.h"
 
-1761227210 source:c:\users\agust\desktop\tp_topicos\tp_topicos\menu.c
+1762104475 source:c:\users\agust\desktop\tp_topicos\tp_topicos\menu.c
 	"functions.h"
 	"indice.h"
-	<stdlib.h>
 
 1761917009 c:\users\lauta\onedrive\desktop\topicos\tp-topicos\tp_topicos\indice.h
 	<stdio.h>
