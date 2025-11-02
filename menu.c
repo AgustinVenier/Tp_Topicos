@@ -149,6 +149,8 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     printf("Ingrese Apellido y Nombre: ");
     fgets(m.nya, sizeof(m.nya), stdin);
     eliminarFinDeLinea(m.nya);
+    normalizar(m.nya);
+
 
     printf("Ingrese sexo (M/F): ");
     scanf("%c", &m.sexo);
@@ -156,7 +158,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     while(!sexValido(m.sexo))
     {
         printf("\n Ingreso Incorrecto\n");
-        printf("Nuevo sexo: ");
+        printf("Ingrese sexo (M/F): ");
         scanf("%c", &m.sexo);
         fflush(stdin);
     }
@@ -167,7 +169,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     while(fNacValido(&m.fecha_nac,fecha))
     {
         printf("\n Ingreso Incorrecto\n");
-        printf("Nueva Fecha de Nacimiento(DD/MM/AAAA): ");
+        printf("Ingrese fecha de nacimiento (dd/mm/aaaa): ");
         scanf("%d/%d/%d", &m.fecha_nac.dia, &m.fecha_nac.mes, &m.fecha_nac.anio);
         fflush(stdin);
     }
@@ -178,7 +180,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     while(fAfiliacionValido(&m.fecha_afi,fecha,&m.fecha_nac)==ERROR)
     {
         printf("\n Ingreso Incorrecto\n");
-        printf("Nueva Fecha de afiliacion (DD/MM/AAAA): ");
+        printf("Ingrese fecha de afiliacion (dd/mm/aaaa): ");
         scanf("%d/%d/%d", &m.fecha_afi.dia, &m.fecha_afi.mes, &m.fecha_afi.anio);
         fflush(stdin);
     }
@@ -189,7 +191,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     while(validarFechaCategoria(m.cat,&m.fecha_nac,fecha))
     {
         printf("\n Ingreso Incorrecto\n");
-        printf("Nueva categoria: ");
+        printf("Ingrese categoria (MENOR/ADULTO): ");
         fgets(m.cat, sizeof(m.cat), stdin);
         eliminarFinDeLinea(m.cat);
     }
@@ -200,7 +202,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     while(fUltCoutaValido(&m.fecha_cuota,&m.fecha_afi,fecha))
     {
         printf("\n Ingreso Incorrecto\n");
-        printf("Nueva Fecha de ultima cuota (DD/MM/AAAA): ");
+        printf("Ingrese fecha de ultima cuota paga (dd/mm/aaaa): ");
         scanf("%d/%d/%d", &m.fecha_cuota.dia, &m.fecha_cuota.mes, &m.fecha_cuota.anio);
         fflush(stdin);
     }
@@ -213,7 +215,7 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
     while(!planValido(m.plan))
     {
         printf("\n Ingreso Incorrecto\n");
-        printf("Nuevo plan: ");
+        printf("Ingrese plan (BASIC/PREMIUM/VIP/FAMILY): ");
         fgets(m.plan, sizeof(m.plan), stdin);
         eliminarFinDeLinea(m.plan);
     }
@@ -223,16 +225,15 @@ int Alta(const char *nombreArch, t_indice *ind, const t_fecha *fecha)
         printf("Ingrese email: ");
         fgets(m.email, sizeof(m.email), stdin);
         eliminarFinDeLinea(m.email);
-    }
+                    while(validarEmail(m.email))
+            {
+                printf("\n Ingreso Incorrecto\n");
+                printf("Ingrese email: ");
+                fgets(m.email, sizeof(m.email), stdin);
+                eliminarFinDeLinea(m.email);
 
-    // Valido los campos del miembro
-    if (validaciones(&m, fecha) != OK)
-    {
-        printf("Registro invalido según validaciones. Alta cancelada.\n");
-        fclose(pf);
-        return ERROR;
+            }
     }
-
     // Escribir al final:
     fseek(pf, 0, SEEK_END);
     fwrite(&m, sizeof(t_miembro), 1, pf);
