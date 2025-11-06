@@ -223,6 +223,12 @@ int validarFecha(const t_fecha* f)
 {
     int diasEnMes;
 
+    if (f->anio < 1900)
+    {
+        return ERROR;
+    }
+
+
     if (f->mes < 1 || f->mes > 12)
     {
         return ERROR;
@@ -248,10 +254,7 @@ int validarFecha(const t_fecha* f)
         return ERROR;
     }
 
-    if (f->anio < 1)
-    {
-        return ERROR;
-    }
+
     return OK;
 }
 
