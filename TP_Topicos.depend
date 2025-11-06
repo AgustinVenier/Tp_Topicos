@@ -38,27 +38,28 @@
 	"indice.h"
 	"functions.h"
 
-1761271723 source:c:\users\camila navarro\tp_topicos\functions.c
+1762454052 source:c:\users\camila navarro\tp_topicos\functions.c
 	"functions.h"
 
-1761274785 c:\users\camila navarro\tp_topicos\functions.h
+1762454052 c:\users\camila navarro\tp_topicos\functions.h
 	<stdio.h>
 	<stdlib.h>
 	<ctype.h>
 	<string.h>
 	<dirent.h>
+	<unistd.h>
 	"indice.h"
 
-1761270713 c:\users\camila navarro\tp_topicos\indice.h
-
-1761271723 source:c:\users\camila navarro\tp_topicos\indice.c
+1761873368 c:\users\camila navarro\tp_topicos\indice.h
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
+
+1761873368 source:c:\users\camila navarro\tp_topicos\indice.c
 	"indice.h"
 	"functions.h"
 
-1761271723 source:c:\users\camila navarro\tp_topicos\main.c
+1761873368 source:c:\users\camila navarro\tp_topicos\main.c
 	"functions.h"
 
 1762104475 source:c:\users\agust\desktop\tp_topicos\tp_topicos\menu.c
@@ -78,11 +79,9 @@
 	"functions.h"
 	"indice.h"
 
-1761274745 source:c:\users\camila navarro\tp_topicos\menu.c
+1762456393 source:c:\users\camila navarro\tp_topicos\menu.c
 	"functions.h"
 	"indice.h"
-	<stdlib.h>
-	<unistd.h>
 
 1761354738 source:c:\users\nikob\desktop\importante\facultad\topicos2\tp_topicos-5\functions.c
 	"functions.h"

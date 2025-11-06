@@ -348,7 +348,7 @@ int fAfiliacionValido(const t_fecha* fechaAfi, const t_fecha* fechaProc, const t
     if (validarFecha(fechaAfi) == ERROR)
         return ERROR;
 
-    if (compararFecha(fechaAfi, fechaProc) > 0) // AfiliaciÃ³n no puede ser antes del nacimiento
+    if (compararFecha(fechaAfi, fechaProc) > 0) // Afiliación no puede ser antes del nacimiento
         return ERROR;
 
     if (compararFecha(fechaAfi, fechaNac) < 0) // No puede afiliarse antes de nacer
@@ -361,11 +361,11 @@ int fUltCoutaValido(const t_fecha* fechaCuota, const t_fecha* fechaAfi, const t_
 {
     if (validarFecha(fechaCuota) == ERROR)
         return ERROR;
-    // No puede ser antes de la afiliaciÃ³n
-    if (compararFecha(fechaCuota, fechaAfi) < 0)    // No puede ser antes de la afiliaciÃ³n
+    // No puede ser antes de la afiliación
+    if (compararFecha(fechaCuota, fechaAfi) < 0)    // No puede ser antes de la afiliación
         return ERROR;
-    // No puede ser despuÃ©s del proceso
-    if (compararFecha(fechaCuota, fechaProc) > 0)   // No puede ser despuÃ©s del proceso
+    // No puede ser después del proceso
+    if (compararFecha(fechaCuota, fechaProc) > 0)   // No puede ser después del proceso
         return ERROR;
 
     return OK;
